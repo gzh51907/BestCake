@@ -12,7 +12,6 @@ router.use((req, res, next) => {
     }
 })
 //引入路由
-
 const listrouter = require('./listpages');//引入listpages路由
 
 router.use(express.urlencoded({//处理静态资源

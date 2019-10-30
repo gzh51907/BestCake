@@ -4,7 +4,13 @@ class App extends Component{
     render(){
         return(
             <div>
-                顶顶顶顶
+              <Switch>
+                  <Router path='/home' compoment={}></Router>
+                  <Router path='/list' compoment={}></Router>
+                  <Router path='/cart' compoment={}></Router>
+                  <Router path='/mine' compoment={}></Router>
+                  <Redirect to="home" from='/'></Redirect>
+              </Switch>
             </div>
         )
     }

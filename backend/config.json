@@ -1,0 +1,5 @@
+{
+    "port": 20124,
+    "mongourl": "mongodb://localhost:27017",
+    "mongoname": "bestcake"
+}

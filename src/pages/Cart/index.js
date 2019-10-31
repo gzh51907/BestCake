@@ -5,13 +5,14 @@ import './Cart.scss';
 import MyContext from '../../context';
 import Recommend from '../../components/recommend/index';
 
+let plainOptions = [];//全选的初始化
+let defaultCheckedList = [];//默认选中的初始化
+
 class App extends Component {
     state = {
-        // checkedList: defaultCheckedList,
-        indeterminate: true,
         checkAll: true,
-        plainOptions: ['Apple', 'Apple', 'Apple'],
-        defaultCheckedList: ['Apple', 'Apple', 'Apple'],
+        sumList: [],
+        checkedList: defaultCheckedList,
         totalPrice: '1111.00',
         datalist: [
             {
@@ -20,72 +21,111 @@ class App extends Component {
                 weight: '300g',
                 promotion_price: '88.00',
                 price: '198.00',
-                type: '爆款直降'
+                type: '爆款直降',
+                qty: 5
             },
             {
                 title: '马卡龙の吻',
                 image: '../../../assest/makalong.png',
-                weight: '300g',
-                promotion_price: '88.00',
+                weight: '1300g',
+                promotion_price: '188.00',
                 price: '198.00',
-                type: '爆款直降'
+                type: '爆款直降',
+                qty: 3
             }, {
                 title: 'Wishing Angel',
                 image: '../../../assest/makalong.png',
-                weight: '300g',
-                promotion_price: '88.00',
+                weight: '2300g',
+                promotion_price: '288.00',
                 price: '198.00',
-                type: '爆款直降'
+                type: '爆款直降',
+                qty: 2
             },
         ]
     };
-
-    onChange = (e) => {
-        let { indeterminate, defaultCheckedList, plainOptions } = this.state;
-        if (defaultCheckedList.length === 3) {
-            this.setState({
-                indeterminate: true,
-            })
-        } else {
-            this.setState({
-                indeterminate: false,
-            })
+    //反选
+    onChange = (title, e) => {
+        if (e.target.checked && !defaultCheckedList.includes(title)) {
+            defaultCheckedList.push(title);
         }
-        if (e.target.checked && defaultCheckedList.length < 3) {
-            defaultCheckedList.unshift('Apple');
-        } else {
-            defaultCheckedList.shift();
+        else if (!e.target.checked) {
+            defaultCheckedList = defaultCheckedList.filter(item => item !== title);
         }
-        console.log('e', e.target.checked);
-    };
 
-    onCheckAllChange = e => {
-        let { plainOptions, defaultCheckedList, checkAll } = this.state;
-
-        // if (e.target.checked) {
-
-        // }
         this.setState({
-            defaultCheckedList: !e.target.checked ? plainOptions : [],
-            // indeterminate: false,
+            defaultCheckedList,
+            checkAll: defaultCheckedList.length === plainOptions.length ? true : false
+        });
+        this.changeSum();
+    };
+    //全选
+    onCheckAllChange = e => {
+        let { checkAll } = this.state;
+        defaultCheckedList = e.target.checked ? plainOptions : [];
+        this.setState({
             checkAll: e.target.checked,
         });
-        console.log(defaultCheckedList, plainOptions);
-        console.log(`checked = ${e.target.checked}`, `checkAll = ${checkAll}`);
     };
+    //改数量
+    changeQty = (idTitle, qty) => {
+        console.log(idTitle, qty);
+        let { datalist } = this.state;
+        datalist.forEach(item => {
+            // console.log(item);
+            if (item.title === idTitle) {
+                item.qty = qty
+            }
+        })
+        // console.log(newData);
+        this.setState({
+            datalist
+        })
+        this.changeSum()
+    }
+    componentDidMount() {
+        let { datalist } = this.state;
+        let arr = [];
+        //渲染datalist的title来实现
+        datalist.map(item => {
+            arr.push(item.title);
+        })
+        defaultCheckedList = plainOptions = arr;
+
+        this.changeSum()
+    }
+    changeSum() {
+        let { sumList, datalist } = this.state;
+        sumList = [];
+        datalist.forEach(item => {
+            defaultCheckedList.forEach(deitem => {
+                if (item.title === deitem) {
+                    sumList.push(item)
+                }
+            })
+        })
+        this.setState({
+            sumList
+        })
+        // console.log('sumList', sumList)
+        // console.log('defaultCheckedList', defaultCheckedList)
+        //总计
+        this.setState({
+            totalPrice: sumList.reduce((prev, item) => prev + item.promotion_price * item.qty, 0)
+        })
+    }
+
     render() {
-        let { datalist, totalPrice, indeterminate, checkAll } = this.state;
+        let { datalist, totalPrice, checkAll } = this.state;
         return (
             <div className="cart">
                 <div>
                     {
                         datalist.map(item => {
-                            return <dl className="goods" key={item.title}>
+                            return <dl className="goods" key={item.weight}>
                                 <dt className="goodsItem" >
                                     <Checkbox
-                                        // value={this.state.checkedList}
-                                        onChange={this.onChange}
-                                        checked={indeterminate}
+                                        onChange={this.onChange.bind(this, item.title)}
+                                        checked={defaultCheckedList.indexOf(item.title) > -1 ? true : false}
                                     ></Checkbox>
                                     <img src={item.image} />
                                     <p>
@@ -97,7 +137,12 @@ class App extends Component {
                                         </span>
                                     </p>
                                     <div className="inputNum">
-                                        <InputNumber min={1} max={10} defaultValue={3} />
+                                        <InputNumber
+                                            min={1}
+                                            max={10}
+                                            defaultValue={item.qty}
+                                            onChange={this.changeQty.bind(this, item.title)}
+                                        />
                                     </div>
                                 </dt>
                                 <dd>
@@ -108,13 +153,30 @@ class App extends Component {
                         })
                     }
                 </div>
+
+                {/* <div style={{ borderBottom: '1px solid #E9E9E9' }}>
+                    <Checkbox
+                        indeterminate={indeterminate}
+                        onChange={this.onCheckAllChange}
+                        checked={checkAll}
+                    >
+                        Check all
+                    </Checkbox>
+                </div>
+                <br />
+                <CheckboxGroup
+                    options={plainOptions}
+                    value={checkedList}
+                    onChange={this.onChange}
+                /> */}
+
                 <MyContext.Provider>
                     <Recommend></Recommend>
                 </MyContext.Provider>
 
                 <div className="total">
                     <Checkbox
-                        // indeterminate={this.state.indeterminate}
+                        // indeterminate={indeterminate}
                         onChange={this.onCheckAllChange}
                         checked={checkAll}
                     >全选

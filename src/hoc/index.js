@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-
+import Api from "@/api"
 export function withState(InnerComponent){
     return class extends Component{
         constructor(){
@@ -40,6 +40,40 @@ export function withState(InnerComponent){
     }
 }
 
+export function withHome(InnerComponent){
+    return class extends Component{
+        constructor(){
+            super()
+            this.state = {
+                data:{
+                    SwiperBannerList:[],
+                    bannerimg:"https://res.bestcake.com/images/newIndex/title.png?v=1",
+                    TopIconList:[],
+                    CenterContentList:[],
+                    SaleList:[]
+                }
+            }
+        }
+            
+        async componentDidMount(){
+            let {data} = await Api.get_homedata();
+            // console.log(data);
+            //  格式化数据
+            this.setState({
+                SwiperBannerList:data[0].Tag.mainresult.SwiperBannerList,
+                TopIconList:data[0].Tag.mainresult.TopIconList,
+                CenterContentList:data[0].Tag.mainresult.CenterContentList,
+                SaleList:data[0].Tag.mainresult.SaleList
+            })
+        }
+        render(){
+            let {data} = this.state;
+            return <InnerComponent data={data}/>
+        }
+    }
+}
+
 export  default {
-    withState
+    withState,
+    withHome
 }

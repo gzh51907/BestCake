@@ -15,7 +15,7 @@ class Navbar extends Component {
         let { navlist, selected, cartlength } = this.props.data;
         // console.log(navlist);
         return (
-            <div>
+            <div style={{ height: 80, lineHeight: 80 }}>
                 <Menu
                     mode="horizontal"
                     selectedKeys={selected}
@@ -28,7 +28,9 @@ class Navbar extends Component {
                     style={{
                         position: "fixed",
                         width: '100%', height: 80,
-                        bottom: -25
+
+                        bottom: -25,
+                        left: 0, right: 0
                     }}
                 >
                     {
@@ -43,7 +45,7 @@ class Navbar extends Component {
                                             display: "flex",
                                             flexDirection: "column", justifyContent: "center", flex: 1, alignSelf: 'center'
                                         }}>
-                                        <Icon type={item.icon} style={{ paddingLeft: 10 }} />
+                                        <Icon type={item.icon} style={{ paddingLeft: 10, marginBottom: -1 }} />
                                         <span>{item.text}</span>
                                     </Badge>
                                     :
@@ -51,7 +53,7 @@ class Navbar extends Component {
                                         display: "flex",
                                         flexDirection: "column", justifyContent: "center", flex: 1
                                     }}>
-                                        <Icon type={item.icon} style={{ paddingLeft: 10 }} />
+                                        <Icon type={item.icon} style={{ paddingLeft: 10, marginBottom: -1 }} />
                                         <span >{item.text}</span>
                                     </div>
                             }

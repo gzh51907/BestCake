@@ -1,4 +1,6 @@
 .bestcake{
+
+    *{box-sizing: border-box}
     .ant-carousel .slick-slide {
         text-align: center;
         height: 160px;
@@ -59,6 +61,11 @@
             }
         }
     }
+    .commodity-goods{
+        .ant-row{
+            margin: 0;
+        }
+    }
     .special{
         padding: 4.2667vw;
         background: #fff;
@@ -85,15 +92,15 @@
         img{
             height: 100%;
             width: 100%;
-            display: block;
-            position: absolute;
-            left: 0;
-            top: 0;
+            // display: block;
+            // position: absolute;
+            // left: 0;
+            // top: 0;
         }
     }
     
     .wrap-box{
-        width: auto;
+        width: 100%;
         overflow-x: auto;
         display: flex;
         flex-wrap: nowrap;

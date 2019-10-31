@@ -3,7 +3,7 @@ import Api from "@/api"
 import { Layout, Row, Col ,Carousel , Icon,List, Skeleton} from 'antd';
 import "../css/home.scss";
 const {Content } = Layout;
-
+import Navbar from "@/components/navbar";
 class Home extends Component{
 
     state={
@@ -17,7 +17,7 @@ class Home extends Component{
 
 async componentDidMount(){
         let {data} = await Api.get_homedata();
-        console.log(data);
+        // console.log(data);
         //  格式化数据
         this.setState({
             SwiperBannerList:data[0].Tag.mainresult.SwiperBannerList,
@@ -25,14 +25,23 @@ async componentDidMount(){
             CenterContentList:data[0].Tag.mainresult.CenterContentList,
             SaleList:data[0].Tag.mainresult.SaleList
         })
-    }
 
+        //修正边距
+        let arr = document.querySelectorAll(".commodity-goods .ant-row")[0];
+        arr.style.margin = 0;
+    }
+    goto=(name)=>{
+        this.props.history.push({
+            pathname:"/detail",
+            query:name
+        })
+    }
 
     render(){
         let  {SwiperBannerList,bannerimg,
             TopIconList,CenterContentList,
             SaleList} = this.state;
-        console.log(SaleList)
+        // console.log(SaleList)
         if(SaleList.length){
             return(
                 <Layout className="bestcake" style={{background:"white"}}>
@@ -72,11 +81,11 @@ async componentDidMount(){
                                 }
                             }/>
                         </Row>
-                        <List  style={{marginTop:15}}
+                        <List  className="commodity-goods" style={{marginTop:15}}
                             grid={{ gutter: 10, column: 4 }}
                             dataSource={TopIconList}
                             renderItem={item => (
-                            <List.Item style={{marginBottom:0}}>
+                            <List.Item style={{margin:0,width:'100%'}}>
                                 <div style={{display:'flex',flexDirection:"column",justifyContent:"center",alignItems:"center"}}>
                                     <img src={item.ImgUrl} style={{width:' 13.8667vw',height:'13.8667vw'}}/>
                                     <p  style={{fontSize:12,marginTop:8}}>
@@ -103,16 +112,15 @@ async componentDidMount(){
                             }
                         </Row>
                         <Row className="box-header">
-                        <img src="https://res.bestcake.com/m-images/HotRecommend/571060506020139900.jpg"/>
+                        <img src="https://res.bestcake.com/m-images/HotRecommend/571060506020139900.jpg" />
                         </Row>
-                        < Row className="wrap-box">
+                        < Row className="wrap-box" style={{width:"100%"}}>
                             {       
-                                // console.log(SaleList[0].CakeList)
                                 JSON.parse(SaleList[0].CakeList).map((item,index)=>{
                                     let anurl1 = `https://res.bestcake.com/m-images/ww/jd/${item.Name}.png`
                                     let anurl2 = `https://res.bestcake.com/m-images/ww/ns/${item.Name}.jpg`
                                     // console.log('11',)
-                                    return  <div className="item-box" key={item.Id}>
+                                    return  <div className="item-box" key={item.Id} onClick={this.goto.bind(this,item.Name)}>
                                                 <img src={(index<2)?anurl1:anurl2} />
                                                 <p className='p-name'>{item.Name}</p>
                                                 <div className="item-inf">
@@ -126,16 +134,16 @@ async componentDidMount(){
     
                         </ Row>
                         <Row className="box-header">
-                        <img src="https://res.bestcake.com/m-images/HotRecommend/427276281583982800.jpg"/>
+                        <img src="https://res.bestcake.com/m-images/HotRecommend/427276281583982800.jpg" />
                         </Row>
-                        < Row className="wrap-box">
+                        < Row className="wrap-box" style={{width:"100%"}}>
                             {       
                                 // console.log(SaleList[0].CakeList)
                                 JSON.parse(SaleList[1].CakeList).map((item,index)=>{
                                     let anurl1 = `https://res.bestcake.com/m-images/ww/jz/${item.Name}.png`
                                     // let anurl2 = `https://res.bestcake.com/m-images/ww/ns/${item.Name}.jpg`
                                     // console.log('11',)
-                                    return  <div className="item-box" key={item.Id}>
+                                    return  <div className="item-box" key={item.Id} onClick={this.goto.bind(this,item.Name)} >
                                                 <img src={anurl1} />
                                                 <p className='p-name'>{item.Name}</p>
                                                 <div className="item-inf">
@@ -149,17 +157,17 @@ async componentDidMount(){
     
                         </ Row>
                         <Row className="box-header">
-                        <img src="https://res.bestcake.com/m-images/HotRecommend/497197919096789000.jpg"/>
+                        <img src="https://res.bestcake.com/m-images/HotRecommend/497197919096789000.jpg" />
                         </Row>
 
-                        < Row className="wrap-box">
+                        < Row className="wrap-box" style={{width:"100%"}}>
                             {       
                                 // console.log(SaleList[0].CakeList)
                                 JSON.parse(SaleList[2].CakeList).map((item,index)=>{
                                     // let anurl1 = `https://res.bestcake.com/m-images/ww/jd/${item.Name}.png`
                                     let anurl2 = `https://res.bestcake.com/m-images/ww/rp/${item.Name}.jpg`
                                     // console.log('11',)
-                                    return  <div className="item-box" key={item.Id}>
+                                    return  <div className="item-box" key={item.Id} onClick={this.goto.bind(this,item.Name)}>
                                                 <img src={anurl2} />
                                                 <p className='p-name'>{item.Name}</p>
                                                 <div className="item-inf">
@@ -174,12 +182,13 @@ async componentDidMount(){
                         </ Row>
                     </Content>
                 
+                    <Navbar />
                 </Layout>
             )
         }else{
             return <Skeleton />
         }
-        
+
     }
 }
 export default Home;

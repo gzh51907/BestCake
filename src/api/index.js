@@ -7,6 +7,17 @@ export async function get_homedata(params,config={}){
     let {data} = await bsk.get('/home/inf');
     return data;
 }
+
+export async function get_detaildata(datas,config={}){
+    let {data} = await bsk.get('/detail_inf/detail',{
+        params:{
+            Name:datas
+        }
+    });
+    return data;
+}
 export default {
-    get_homedata
+    get_homedata,
+    get_detaildata
+    
 };

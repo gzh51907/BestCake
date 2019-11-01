@@ -7,7 +7,7 @@ import Cart from "@/pages/cart/index";
 import List from "@/pages/list";
 import Mine from "@/pages/mine/index";
 import Detail from "@/components/detailPage";
-
+import Order from './pages/order';
 class App extends Component {
     render() {
         return (
@@ -17,10 +17,10 @@ class App extends Component {
                     <Route path="/cart" component={Cart} />
                     <Route path="/list" component={List} />
                     <Route path="/mine" component={Mine} />
+                    <Route path="/order" component={Order}/>
                     <Route path="/detail" component={Detail} />
                     <Redirect from="/" to="/home" exact />
                 </Switch>
-                <Navbar></Navbar>
             </div>
         )
     }

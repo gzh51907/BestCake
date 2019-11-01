@@ -9,6 +9,7 @@ module.exports = {
     },
     devServer:{
         contentBase:path.join( __dirname,'./src'),
+        port:20085
         // open:true
     },
     resolve:{

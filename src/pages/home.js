@@ -1,23 +1,27 @@
 import React,{Component}from "react";
 import Api from "@/api"
-import { Layout, Row, Col ,Carousel , Icon,List, Skeleton} from 'antd';
+import { Layout, Row, Col ,Carousel , Icon,List, Skeleton ,Drawer} from 'antd';
 import "../css/home.scss";
 const {Content } = Layout;
 import Navbar from "@/components/navbar";
-class Home extends Component{
 
+class Home extends Component{
     state={
         //轮播图
         SwiperBannerList:[],
         bannerimg:"https://res.bestcake.com/images/newIndex/title.png?v=1",
         TopIconList:[],
         CenterContentList:[],
-        SaleList:[]
+        SaleList:[],
+        placename:"上海",
+        visible: false,
+        placelist:[
+            '上海','苏州','杭州','宁波','无锡','南京','北京','天津']
     }
 
 async componentDidMount(){
         let {data} = await Api.get_homedata();
-        // console.log(data);
+        console.log(data);
         //  格式化数据
         this.setState({
             SwiperBannerList:data[0].Tag.mainresult.SwiperBannerList,
@@ -36,23 +40,57 @@ async componentDidMount(){
             query:name
         })
     }
+    changePlace = ()=>{
+        this.setState({
+            visible: true,
+        });
+    }
+    onClose = () => {
+        this.setState({
+            visible: false,
+        });
+        }
+    addit=(place)=>{
+        this.setState({
+            placename:place,
+            visible: false
+        }); 
+    }
 
     render(){
         let  {SwiperBannerList,bannerimg,
             TopIconList,CenterContentList,
-            SaleList} = this.state;
+            SaleList,placename,placelist} = this.state;
         // console.log(SaleList)
         if(SaleList.length){
             return(
-                <Layout className="bestcake" style={{background:"white"}}>
-                    <Row style={{padding:5}}>
-                        <Col span={10} style={{fontSize:16}}>
-                        <Icon type="environment" style={{fontSize:25}}/> &nbsp;上海&nbsp;
+                <Layout className="bestcake" style={{background:"white",width:"100%"}}>
+                    <Row >
+                        <Col span={10} style={{fontSize:16}}  onClick={this.changePlace}>
+                        <Icon type="environment" style={{fontSize:25}}/> &nbsp;{placename}&nbsp;
                         <Icon type="right" />
                         </Col>
                     </Row>
-    
+                    <Drawer
+                    title="选择城市"
+                        placement="top"
+                        closable={false}
+                        onClose={this.onClose}
+                        visible={this.state.visible}
+                        >
+                            <div >
+                            {
+                                placelist.map((item,index)=><p key={index}  style={{width:50,display:"inline-block"}} >
+                                    <span  onClick={this.addit.bind(this,item)}  style={{width:50}}>
+                                        {item}
+                                    </span>
+                                </p>)
+                            }
+                            </div>
+                        </Drawer>
                     <Content >
+
+
                         <Carousel autoplay style={{marginLeft:16,paddingBottom:0,paddingTop:0}}>
                             {
                                 SwiperBannerList.map(item=>(<div key={item.Id}  style={{borderRadius:"5%"}}>

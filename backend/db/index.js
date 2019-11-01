@@ -28,7 +28,7 @@ async function create(colName, data) {
         db,
         client
     } = await connect();//开启mongo连接
-    let clo = db.collection(colName);//获取对应colName的集合collection
+    let col = db.collection(colName);//获取对应colName的集合collection
     let result = await col.insertMany(data);//插入数据
     client.close();//关闭数据库连接
     return result;
@@ -67,7 +67,7 @@ async function update(colName, query, data) {
 /**
  * 查
  * colName   字符串  执行操作的集合名字
- * query     {},要查找的数据特征   可不写 模糊查询传入{$or:[{属性:new RegExp(正则)},...]}
+ * query     {}或[{}],要查找的数据特征   可不写 模糊多组查询传入[{属性:new RegExp(正则)},...]
  * page      number,当前页数      可不写
  * sk        number,一页数据的数量 可不写,写了page就一定要写
 */
@@ -80,9 +80,13 @@ async function find(colName, query = {}, page, sk) {
     let col = db.collection(colName);//获取集合
     if (page) {//如果传页数，就一定要传sk数量获取部分数据
         page = page - 1;
-        result = await col.find(query).skip(sk * page - 0).limit(sk).toArray()
+        if (Array.isArray(query)) { result = await col.find({ $or: query }).skip(sk * page - 0).limit(sk).toArray() }
+        else { result = await col.find(query).skip(sk * page - 0).limit(sk).toArray() }
+
     } else {//否则返回全部符合query特征的数据
-        result = await col.find(query).toArray();
+        if (Array.isArray(query)) { result = await col.find({ $or: query }).toArray(); }
+        else { result = await col.find(query).toArray(); }
+
     }
     client.close()//关闭数据库
     return result;

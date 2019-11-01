@@ -25,23 +25,22 @@ onChange(value) {
                 detaildata:data[0],
                 Size:data[0].Size,
                 CurrentPrice:data[0].CurrentPrice,
-                str_con : data[0].imgurl
+                str_con : data[0].imgurl.slice(37,39)
             })
 
             //图片处理
-            if(this.state.str_con){
                 var res = [];
+            if(this.state.str_con){
                 for(var i = 1; i <=4; i++) {
-                let anurl = ` https://res.bestcake.com/m-images/${this.state.str_con}-detail/${data[0].Name}/${data[0].Name}-${i}.jpg`
+                let anurl = `https://res.bestcake.com/m-images/${this.state.str_con}-detail/${data[0].Name}/${data[0].Name}-${i}.jpg`
                     res.push(anurl)
                 }
                 this.setState({
                     piclist:res
                 })
             }else{
-                var res = [];
                 for(var i = 1; i <=4; i++) {
-                let anurl = ` https://res.bestcake.com/m-images/rp-detail/${data[0].Name}/${data[0].Name}-${i}.jpg`
+                let anurl = `https://res.bestcake.com/m-images/rp-detail/${data[0].Name}/${data[0].Name}-${i}.jpg`
                     res.push(anurl)
                 }
                 this.setState({
@@ -49,7 +48,7 @@ onChange(value) {
                 })
             }
 
-            console.log(this.state.str_con)
+            console.log(this.state.piclist)
     }
 
     render(){

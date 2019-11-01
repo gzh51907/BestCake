@@ -29,6 +29,7 @@ export async function check_phone(datas, config = {}) {
 export default {
     get_homedata,
     get_detaildata,
-    check_phone
-
+    check_phone,
+    bsk
 };
+// export default bsk;

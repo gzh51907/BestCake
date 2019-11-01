@@ -3,6 +3,7 @@ import { Icon, Divider, Drawer, Button, Form, Input, message } from "antd";
 import '../../pages/Mine/Mine.scss';
 import 'antd/dist/antd.css';
 import Api from '../../api';
+console.log('api', Api);
 class Mine extends Component {
     state = {
         isok: true,
@@ -105,7 +106,7 @@ class Mine extends Component {
         this.setState({
             regPhone: e.target.value
         })
-        console.log('input', this.state.regPhone)
+        // console.log('input', this.state.regPhone)
     }
     // 获取reg验证码的内容
     handleRegCode = (e) => {
@@ -126,8 +127,18 @@ class Mine extends Component {
         })
     }
     // 验证是否已注册
-    checkPhone = () => {
-
+    checkPhone = async () => {
+        let { regPhone } = this.state;
+        regPhone = Number(regPhone);
+        console.log(regPhone);
+        let res = await Api.check_phone({
+            phone: regPhone
+        })
+        console.log(res)
+        if (res.code === 1) {
+            let msg = "账号已注册，请更换！"
+            this.error(msg);
+        }
     }
     // 注册验证
     checkReg = () => {
@@ -143,6 +154,10 @@ class Mine extends Component {
         } else if (regCode.toLowerCase() !== random.toLocaleLowerCase()) {
             msg = '验证码不正确！';
             // console.log('no', result)
+        } else if (regPhone !== '' && result && regCode.toLowerCase() === random.toLocaleLowerCase()) {
+            this.setState({
+                visible: false
+            })
         }
         this.error(msg);
     }

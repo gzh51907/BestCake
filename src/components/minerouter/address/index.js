@@ -14,7 +14,7 @@ class Address extends Component {
         ]
     }
     goback = () => {
-        this.props.history.push('/mine');
+        this.props.history.push('/mine/minehome');
     }
     componentDidMount() {
         console.log(this.props.match.path)
@@ -83,8 +83,6 @@ class Address extends Component {
                                 fontSize: 16,
                                 color: '#fff'
                             }}>
-
-                            <Link to={{ pathname: '/newAddress' }} >新增地址</Link>
                         </Button>
 
                     </div>

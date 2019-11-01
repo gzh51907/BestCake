@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import 'antd/dist/antd.css';
 import Navbar from "@/components/navbar";
-import { Switch, Route, Redirect } from 'react-router-dom' //引入withRouter
+import { Switch, Route, Redirect, withRouter } from 'react-router-dom' //引入withRouter
 import Home from "@/pages/home"
 import Cart from "@/pages/cart/index"
 import List from "@/pages/list"

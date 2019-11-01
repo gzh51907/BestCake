@@ -4,9 +4,10 @@ import {withRouter} from 'react-router-dom'
 import TJ from '../components/TJ';
 import BZ from '../components/BZ'
 import Adress from '../components/adress';
-import bsk from '../api';
+import API from '../api';
 import store from '../store'
 import {connect} from 'react-redux';
+const {bsk} = API;
 const mapStateToProps=(state)=>({
    cart:state.Cart
 })
@@ -66,7 +67,7 @@ class Order extends Component{
                Name:item.Name,
                CurrentPrice:item.CurrentPrice,
                Size:item.Size,
-               num:cart.map(i=>{if(i.name==item.Name){return i.num}})
+               num:cart.filter(i=>{ return i.name==item.Name})[0].num
             }
         });
         this.setState({
@@ -75,6 +76,7 @@ class Order extends Component{
         this.state.datalist.forEach(i=>{//计算价格总和
             total+=i.CurrentPrice*i.num;
          })
+         
          this.setState({
              total:total.toFixed(2),
              goodstotal:total.toFixed(2)
@@ -147,7 +149,6 @@ class Order extends Component{
         }
     }
     render(){
-        console.log(this.props.cart);
         let {datalist,total,tj,adressobj} = this.state;
         let{showadress}=this;
         return(<div className="order123" style={{padding:'0vw 4vw',position:'relative',width:'100vw',marginBottom:'14.5vw',overflow:'hidden'}}>

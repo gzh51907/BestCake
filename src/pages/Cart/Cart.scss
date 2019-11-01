@@ -1,0 +1,125 @@
+.cart{
+    width: 100%;
+    box-sizing: border-box;
+    background-color: rgb(241, 241, 232);
+    .goods{
+        width: 100%;
+        margin-bottom: 20px;
+        background-color: #fff;
+        .goodsItem{
+            width: 100%;
+            height: 110px;
+            display: flex;
+            justify-content: space-around;
+            .ant-checkbox-wrapper{
+                padding-top: calc(55px - 8px);
+            }
+            >img{
+                width: 114px;
+                height:100%;
+            }
+            >p{
+                display: flex;
+                flex-direction: column;
+                padding-top: 10px;
+                margin-bottom: 0;
+                >.title{
+                    font-size: 16px;
+                    line-height: 20px;
+                    height: 20px;
+                    margin-bottom: 10px;
+                }
+                >em{
+                    color: #ccc;
+                    font-size: 12px;
+                    height: 20px;
+                    line-height: 20px;
+                    margin-bottom: 10px;
+                }
+                >.price{
+                    display:flex;
+                    font-style: 12px;
+                    height: 20px;
+                    line-height: 20px;
+                    >del{
+                        color: #ccc;
+                    }
+                }
+            }
+            .inputNum{
+                margin-right: 10px;
+                padding-top: calc(55px - 15px);
+            }
+        }
+        dd{
+            width: 100%;
+            height: 48px;
+            padding-left: 30px;
+            border-top: 1px solid #ccc;
+            >b{
+                height: 100%;
+                line-height: 48px;
+                color: #f2495e;
+                font-size: 12px;
+            }
+            >span{
+                height: 100%;
+                line-height: 48px;
+                font-size: 12px;
+            }
+        }
+    }
+    // 结算
+    .total{
+        position: fixed;
+        left: 0;
+        bottom: 54px;
+        height: 56px;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        background-color: #fff;
+        z-index: 50;
+        .ant-checkbox-wrapper{
+            padding: 18px 10px;
+            // display: flex;
+            // flex-direction: row;
+            .ant-checkbox{
+                width: 19px;
+                height: 19px;
+                .ant-checkbox-inner{
+                    width: 100%;
+                    height: 100%;
+                }
+            }
+        }
+        >span{
+            height: 100%;
+            line-height: 56px;
+            font-style: 14px;
+        }
+        .sum{
+            height: 100%;
+            line-height: 56px;
+            margin-bottom: 0;
+            padding: 0 20px;
+            span{
+                height: 100%;
+                line-height: 56px;
+                font-size: 14px;
+                
+            }
+            b{
+                height: 100%;
+                line-height: 56px;
+                font-size: 16px;
+                color: #f2495e;
+            }
+        }
+        .ant-btn{
+            height: 100%;
+            border-radius: 0;
+            padding: 0 25px;
+        }
+    }
+}

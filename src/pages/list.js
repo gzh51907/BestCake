@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-
 import { Menu } from 'antd';
 import {Route,Switch} from 'react-router-dom';
 import Zy from '../components/Zy';
 import Bsyx from '../components/Bsyx';
+import Navbar from '../components/navbar'
 class List extends Component{
     constructor(){
         super();
@@ -38,6 +38,7 @@ class List extends Component{
         <Route path={this.props.match.path+"/zy"} component={Zy}/>
         <Route path={this.props.match.path+"/bsyx"} component={Bsyx}/>
         </Switch>
+        <Navbar></Navbar>
         </div>)
     }
 }

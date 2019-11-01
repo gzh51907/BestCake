@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Menu,List,Icon } from 'antd';
-import bsk from '../api';
+import API from '../api';
 import { connect } from 'react-redux';
+import {withRouter} from 'react-router-dom';
+const {bsk} = API;
 const mapStateToProps=(state)=>{
   return{
       cart:state.Cart
@@ -15,11 +17,13 @@ const mapDispatchProps=(dispatch)=>{
     }
 }
 @connect(mapStateToProps,mapDispatchProps)
+@withRouter
 class Zy extends Component{
     constructor(){
         super();
         this.handleClick = this.handleClick.bind(this);
         this.AddToCart=this.AddToCart.bind(this);
+        this.godetail = this.godetail.bind(this);
     }
     state={
         datalist:[[],[],[]],
@@ -48,6 +52,12 @@ class Zy extends Component{
         this.setState({
             current
         })
+      }
+      godetail(name){
+         this.props.history.push({
+             pathname:'/detail',
+             query:name
+         })
       }
       AddToCart=({name,num})=>{
           let props =this.props;
@@ -78,7 +88,7 @@ class Zy extends Component{
                     grid={{ xs:2,sm:2 }}
                     dataSource={datalist[current]}
                     renderItem={item => (
-                    <List.Item style={{width:'50vw',paddingLeft:'2vw'}}>
+                    <List.Item onClick={this.godetail.bind(this,item.Name)} style={{width:'50vw',paddingLeft:'2vw'}}>
                         <img src={item.imgurl} style={{width:'100%',height:'44vw'}}/>
                         <div style={{fontSize:'3.734vw',color:'#333',marginTop:'1.867vw',lineHeight:'3.734vw'}}>{item.Name}</div>
                         <div style={{fontSize:'3.2vw',color:'#999',overflow:'hidden',whiteSpace:'nowrap',textOverflow:'ellipsis'}}>{item.Means}</div>

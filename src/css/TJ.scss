@@ -1,0 +1,233 @@
+  
+  .order123{
+    .outer-mask {
+        display: none;
+        position: absolute;
+        width: 100vw;
+        height: 100%;
+        left: 0;
+        top: 0;
+        z-index: 10;
+        background: rgba(0,0,0,0.6);
+    }
+    .cj_list.tableware_list.outer_1DxCK {
+        transition: all 0.3s ease;
+        -webkit-transition: all 0.3s ease;
+        position: fixed;
+        background: #ffffff;
+        width: 100%;
+        left: 0;
+        bottom: -100%;
+        z-index: 20;
+        h3 {
+            height: 11.7334vw;
+            line-height: 11.7334vw;
+            font-size: 3.73vw;
+            padding-left: 5.333333vw;
+            border-bottom: 1px solid #f5f5f5;
+            margin: 0;
+            a {
+                position: absolute;
+                right: 5.333333vw;
+                text-align: right;
+                color: #02d4d7;
+            }
+        }
+        .inner {
+            max-height: 56vh;
+            overflow: hidden;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .input_wrap {
+            position: relative;
+            margin: 4vw 5.333333vw;
+            font-size: 3.73vw;
+        }
+        .tableware-list-cj {
+            height: 10.6667vw;
+            line-height: 10.6667vw;
+        }
+        .cj-clplr-1 {
+            float: left;
+            margin-right: 2.8vw;
+        }
+        .cj-clplr-2 {
+            color: #f2495e;
+            font-weight: bold;
+            float: left;
+        }
+        .cj-clplr-3 {
+            float: right;
+        }
+    }
+    .bz_list.remark_list.outer_1DxCK {
+        display: none;
+        transition: all 0.3s ease;
+        -webkit-transition: all 0.3s ease;
+        position: fixed;
+        background: #ffffff;
+        width: 90%;
+        top:15%;
+        left: 5%;
+        border-radius: 5px;
+        z-index: 20;
+         h3 {
+             flex-wrap: 600;
+            height: 11.7334vw;
+            line-height: 11.7334vw;
+            font-size: 3.73vw;
+            padding-left: 5.333333vw;
+            border-bottom: 1px solid #f5f5f5;
+            margin: 0;
+            a {
+                position: absolute;
+                right: 5.333333vw;
+                text-align: right;
+                color: #02d4d7;
+            }
+        }
+        .inner {
+            max-height: 56vh;
+            overflow: hidden;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .card-line-1DfUC {
+            border-bottom: 1px solid #e0dcd1;
+        }
+    }
+    .action-bar {
+        height: 11.733333vw;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        z-index: 2;
+        span {
+            font-size: 5vw;
+            line-height: 11.733333vw;
+            padding-left: 2.666667vw;
+            vertical-align: middle;
+            color: #fff;
+        }
+         .submitbtn {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            background: #02d4d7;
+            min-width: 32vw;
+            height: 11.733333vw;
+            border: none;
+            color: #fff;
+            font-size: 3.73vw;
+        }
+    }
+    .adress{
+        display: none;
+        height: 100vh;
+        background: rgb(255, 255, 255);
+        z-index: 9;
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100vw;
+        .public-top-main {
+            width: 100%;
+            height: 11.2vw;
+            line-height: 11.2vw;
+            background: #f2f2f2;
+            color: #333;
+            font-size: 4.267vw;
+            position: relative;
+            border-bottom: 1px solid #ddd;
+             .btn {
+                margin-left: 3vw;
+                position: absolute;
+                width: 10vw;
+                height: 100%;
+            }
+        }
+        .mw-add-main{
+        margin-left: 2.66vw;
+        margin-right: 2.66vw;
+        margin-top: 1vw;
+        .form_div {
+            background: #fff;
+            z-index: 9999;
+            height: 180vw;
+            width: 92vw;
+            margin-right: 1vw;
+            margin-top: 4vw;
+            .am-u-sm-12 {
+                width: 100%;
+                float: left;
+                margin-top: 3.5vw;
+                .form_name {
+                    float: left;
+                    font-weight: bolder;
+                    color: #333;
+                    height: 9vw;
+                    line-height: 9vw;
+                }
+                .form_input {
+                    width: 54.133vw;
+                    float: right;
+                    padding: 1.334vw 0;
+                    border: none;
+                    border-bottom: 1px solid #e1e1e1;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    max-width: calc(100% - 4vw);
+                    min-width: calc(100% - 18vw);
+                    outline: none;
+                }
+            }
+        }
+        }
+        
+    }
+    .address-item {
+        -webkit-flex: 0 100%;
+        flex: 0 100%;
+        padding: 0 0 0 5.333333vw;
+        margin-bottom: .066667rem;
+        margin-bottom: .666667vw;
+        position: relative;
+        color: #333;
+        overflow: hidden;
+        .title {
+            line-height: 5.33vw;
+            font-size: 3.73vw;
+            color: #999;
+            margin: 0;
+        }
+        .address-detail {
+            overflow: hidden;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: center;
+            align-items: center;
+            margin: 0;
+            .address-text {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                max-width: calc(100% - 4vw);
+                min-width: calc(100% - 11vw);
+                font-size: 4vw;
+                font-weight: 700;
+                line-height: 35px;
+            }
+        }
+        .address-name {
+            line-height: 5.33vw;
+            font-size: 3.73vw;
+            margin: 0;
+            font-weight: normal;
+        }
+    }
+  }
+  

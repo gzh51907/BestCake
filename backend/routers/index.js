@@ -13,11 +13,11 @@ router.use((req, res, next) => {
 })
 //引入路由
 const listrouter = require('./listpages');//引入listpages路由
-
+const orderrouter = require('./order');//引入订单路由
 router.use(express.urlencoded({//处理静态资源
     extended:true
 }),express.json())
 //使用路由
 router.use('/listpages',listrouter);//使用listpages路由
-
+router.use('/order',orderrouter);//使用订单路由
 module.exports = router;//导出路由

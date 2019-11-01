@@ -5,9 +5,9 @@ import 'antd/dist/antd.css';
 
 class Mine extends Component {
     state = {
-        isok:true,
+        isok: true,
         phone: '12345678912',
-        visible: false,
+        visible: true,//drawer
         menu: [
             {
                 con: '会员等级',
@@ -70,15 +70,15 @@ class Mine extends Component {
         });
     };
     //  登录与注册
-    changeIsok=()=>{
-        let {isok} = this.state;
+    changeIsok = () => {
+        let { isok } = this.state;
         this.setState({
-            isok:!isok
+            isok: !isok
         })
     }
 
     render() {
-        let { phone, menu,isok } = this.state;
+        let { phone, menu, isok } = this.state;
         return (
             <div className="mine">
                 <header>
@@ -131,7 +131,7 @@ class Mine extends Component {
                             <Icon type="left" style={{ color: "#fff" }} />
                         </div>
                         {/* 注册 */}
-                        <div className="reg" style={isok?{display:'block'}:{display:'none'}}>
+                        <div className="reg" style={isok ? { display: 'block' } : { display: 'none' }}>
                             <h2>快速登录</h2>
                             <h6>手机号</h6>
                             <div className="reg_inf">
@@ -146,7 +146,7 @@ class Mine extends Component {
                             </div>
                         </div>
                         {/* 登录 */}
-                        <div className="login" style={!isok?{display:'block'}:{display:'none'}}>
+                        <div className="login" style={!isok ? { display: 'block' } : { display: 'none' }}>
                             <h2>密码登录</h2>
                             <h6>手机号</h6>
                             <div className="login_inf">

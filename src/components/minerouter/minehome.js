@@ -1,13 +1,19 @@
 import React, { Component } from "react";
-import { Icon, Divider, Drawer, Button, Form, Input } from "antd";
+import { Icon, Divider, Drawer, Button, Form, Input, message } from "antd";
 import '../../pages/Mine/Mine.scss';
 import 'antd/dist/antd.css';
-
+import Api from '../../api';
 class Mine extends Component {
     state = {
         isok: true,
         phone: '12345678912',
         visible: true,//drawer
+        random: '',
+        show: false,
+        regPhone: '',
+        regCode: '',
+        logPhone: '',
+        logPass: '',
         menu: [
             {
                 con: '会员等级',
@@ -40,6 +46,10 @@ class Mine extends Component {
         this.setState({
             phone
         })
+
+        this.randomCode()
+
+        //
     }
     goto = (path) => {
         let { history, match } = this.props;
@@ -61,14 +71,6 @@ class Mine extends Component {
         });
     };
 
-    handleSubmit = e => {
-        e.preventDefault();
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
-                console.log('Received values of form: ', values);
-            }
-        });
-    };
     //  登录与注册
     changeIsok = () => {
         let { isok } = this.state;
@@ -76,9 +78,87 @@ class Mine extends Component {
             isok: !isok
         })
     }
+    //随机验证码
+    randomCode = () => {
+        let { random } = this.state;
+        let newCode = "";
+        let html =
+            "0123465789zxcvbnmasdfghjklqwertyuiopZXCVBNMASDFGHJKLQWERTYUIOP";
+        for (let i = 0; i < 4; i++) {
+            let j = parseInt(Math.random() * html.length);
+            newCode += html[j];
+        }
+        random = newCode;
+        this.setState({
+            random
+        })
+    }
+    // 显示验证码
+    showCode = () => {
+        let { show } = this.state;
+        this.setState({
+            show: true
+        })
+    }
+    // 获取reg输入框的内容
+    handleRegPhone = (e) => {
+        this.setState({
+            regPhone: e.target.value
+        })
+        console.log('input', this.state.regPhone)
+    }
+    // 获取reg验证码的内容
+    handleRegCode = (e) => {
+        this.setState({
+            regCode: e.target.value
+        })
+    }
+    // 获取login电话号码的内容
+    handleLogPhone = (e) => {
+        this.setState({
+            logPhone: e.target.value
+        })
+    }
+    // 获取login密码的内容
+    handleLogPass = (e) => {
+        this.setState({
+            logPass: e.target.value
+        })
+    }
+    // 验证是否已注册
+    checkPhone = () => {
+
+    }
+    // 注册验证
+    checkReg = () => {
+        let { regCode, random, regPhone } = this.state;
+        let msg = '';
+        let reg = /^1[3-9]\d{9}$/;
+        let result = reg.test(regPhone);
+        if (regPhone === '') {
+            msg = '请输入手机号码！';
+        }
+        else if (!result) {
+            msg = '手机格式不正确！';
+        } else if (regCode.toLowerCase() !== random.toLocaleLowerCase()) {
+            msg = '验证码不正确！';
+            // console.log('no', result)
+        }
+        this.error(msg);
+    }
+    // 错误提示信息
+    error = (msg) => {
+        message.error(msg);
+    };
+    // 登录验证
+    checkLog = () => {
+        let { logPhone, logPass, regPhone } = this.state;
+        console.log(logPhone, logPass)
+    }
 
     render() {
-        let { phone, menu, isok } = this.state;
+        // const { getFieldDecorator } = this.props.form;
+        let { phone, menu, isok, random, show, regPhone, regCode, logPhone, logPass } = this.state;
         return (
             <div className="mine">
                 <header>
@@ -135,38 +215,49 @@ class Mine extends Component {
                             <h2>快速登录</h2>
                             <h6>手机号</h6>
                             <div className="reg_inf">
-                                <input />
-                                <span>发送验证码</span>
+                                {/* <input ref='regPhone' value={regPhone} onBlur={this.handleRegPhone} ref={el => { this.inputDOM = el }} /> */}
+                                <Input onChange={this.handleRegPhone} onBlur={this.checkPhone} />
+                                <span onClick={this.showCode}>发送验证码</span>
+                            </div>
+                            <div className="code_box" style={show ? { display: 'block' } : { display: 'none' }}>
+                                <h6>验证码</h6>
+                                <div className="random_code">
+                                    <Input onChange={this.handleRegCode} />
+                                    <span onClick={this.randomCode}>{random}</span>
+                                </div>
                             </div>
                             <p>温馨提示：未注册的手机号，登录时将自动注册，且代表您已同意<b>《贝思客用户协议》</b></p>
-                            <div>
+                            <div className="btn_ground">
                                 <Button type="primary" size='large' shape="round" onClick={this.changeIsok}>
                                     使用密码登录
-                            </Button>
+                                </Button>
+                                <div onClick={this.checkReg}>
+                                    <Icon type="right" />
+                                </div>
                             </div>
+
                         </div>
                         {/* 登录 */}
                         <div className="login" style={!isok ? { display: 'block' } : { display: 'none' }}>
                             <h2>密码登录</h2>
                             <h6>手机号</h6>
                             <div className="login_inf">
-                                <input />
-                                <span>发送验证码</span>
+                                <Input onChange={this.handleLogPhone} />
                             </div>
                             <h6>密码</h6>
                             <div className="login_inf">
-                                <input />
-                                <span>发送验证码</span>
+                                <Input.Password onChange={this.handleLogPass} />
                             </div>
                             <div className="btn_ground">
                                 <Button type="primary" size='large' shape="round" onClick={this.changeIsok}>
                                     切换快速登录
                                 </Button>
-                                <div>
-                                    <Icon type="right" width='40px' height='40px' fill='#ccc' />
+                                <div onClick={this.checkLog}>
+                                    <Icon type="right" />
                                 </div>
                             </div>
                         </div>
+
                     </Drawer>
                 </div>
             </div>

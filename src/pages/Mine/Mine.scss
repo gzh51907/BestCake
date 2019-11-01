@@ -106,13 +106,43 @@
             display: flex;
             justify-content: space-between;
             input{
-                width: 280px;
+                width: 270px;
                 height: 100%;
                 border: 0px;
             }
             >span{
                 height: 100%;
                 line-height: 30px;
+                text-align: center;
+                width: 90px;
+                background-color: #ccc;
+                border-radius: 10px;
+            }
+        }
+        .code_box{
+            height: 70px;
+        }
+        .random_code{
+            height: auto;
+            margin-bottom: 10px;
+            input{
+                width: 270px;
+                height: 100%;
+                border: 0px;
+                float: left;
+            }
+            >span{
+                height: 30px;
+                line-height: 30px;
+                font-size: 20px;
+                text-align: center;
+                width: 90px;
+                background-color: #ccc;
+                border-radius: 10px;
+                letter-spacing: 3px;
+                // margin-left: 20px;
+                padding: 0 10px;
+                float: right;
             }
         }
         >p{
@@ -120,6 +150,25 @@
             line-height: 16px;
             b{
                 color: blue;
+            }
+        }
+        .btn_ground{
+            display: flex;
+            justify-content: space-between;
+            >div{
+                width: 40px;
+                height: 40px;
+                background-color: rgba(219, 214, 214,0.4);
+                border-radius: 50%;
+                >i{
+                    width: 40px;
+                    height: 100%;
+                    >svg{
+                        width: 20px;
+                        height: 20px;
+                        margin-top: 10px;
+                    }
+                }
             }
         }
     }
@@ -143,7 +192,7 @@
             display: flex;
             justify-content: space-between;
             input{
-                width: 280px;
+                width: 340px;
                 height: 100%;
                 border: 0px;
             }

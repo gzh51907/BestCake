@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Icon } from "antd";
 class Voucher extends Component {
     goback = () => {
-        this.props.history.push('/mine');
+        this.props.history.push('/mine/minehome');
     }
     render() {
         return (

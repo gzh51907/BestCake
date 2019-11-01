@@ -75,4 +75,101 @@
             line-height: 55px;
         }
     }
+    .login{
+        .ant-drawer-content-wrapper{
+            background-color: rgb(79, 79, 233);
+        }
+    }
+    
+}
+.ant-drawer-body{
+    margin-top: 20px;
+    padding: 0 20px;
+    color: #fff;
+    .reg{
+        width: 100%;
+        h2{
+            font-size: 36px;
+            height: 40px;
+            line-height: 40px;
+            color: #fff;
+        }
+        h6{
+            font-size: 16px;
+            height: 20px;
+            line-height: 20px;
+            color: #fff;
+        }
+        .reg_inf{
+            height: 30px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            input{
+                width: 280px;
+                height: 100%;
+                border: 0px;
+            }
+            >span{
+                height: 100%;
+                line-height: 30px;
+            }
+        }
+        >p{
+            font-size: 12px;
+            line-height: 16px;
+            b{
+                color: blue;
+            }
+        }
+    }
+    .login{
+        width: 100%;
+        h2{
+            font-size: 36px;
+            height: 40px;
+            line-height: 40px;
+            color: #fff;
+        }
+        h6{
+            font-size: 16px;
+            height: 20px;
+            line-height: 20px;
+            color: #fff;
+        }
+        .login_inf{
+            height: 30px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            input{
+                width: 280px;
+                height: 100%;
+                border: 0px;
+            }
+            >span{
+                height: 100%;
+                line-height: 30px;
+            }
+        }
+        .btn_ground{
+            display: flex;
+            justify-content: space-between;
+            >div{
+                width: 40px;
+                height: 40px;
+                background-color: rgba(219, 214, 214,0.4);
+                border-radius: 50%;
+                >i{
+                    width: 40px;
+                    height: 100%;
+                    >svg{
+                        width: 20px;
+                        height: 20px;
+                        margin-top: 10px;
+                    }
+                }
+            }
+        }
+    }
 }

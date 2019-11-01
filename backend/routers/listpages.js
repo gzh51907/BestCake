@@ -9,17 +9,17 @@ router.get('/all',async (req,res)=>{
         let result = await mongo.find(colName);
         res.send(formatData({data:result}));
     }catch{
-        
             res.send(formatData({code:0}))
     }
 })
-//根据商品名获取信息
+//根据商品名获取信息，要想请求多个信息，传 $or:[{name:'1'},{name:'2'},...]
 router.get('/detail',async(req,res)=>{
    let{
        Name
    } = req.query;
+     Name = JSON.parse(Name);
     try{
-          let result = await mongo.find(colName,{Name});
+          let result = await mongo.find(colName,Name);
           res.send(formatData({data:result}));
     }catch{
            res.send(formatData({code:0}));

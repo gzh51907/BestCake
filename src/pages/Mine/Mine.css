@@ -87,3 +87,117 @@
   height: 100%;
   line-height: 55px;
 }
+
+.mine .login .ant-drawer-content-wrapper {
+  background-color: #4f4fe9;
+}
+
+.ant-drawer-body {
+  margin-top: 20px;
+  padding: 0 20px;
+  color: #fff;
+}
+
+.ant-drawer-body .reg {
+  width: 100%;
+}
+
+.ant-drawer-body .reg h2 {
+  font-size: 36px;
+  height: 40px;
+  line-height: 40px;
+  color: #fff;
+}
+
+.ant-drawer-body .reg h6 {
+  font-size: 16px;
+  height: 20px;
+  line-height: 20px;
+  color: #fff;
+}
+
+.ant-drawer-body .reg .reg_inf {
+  height: 30px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.ant-drawer-body .reg .reg_inf input {
+  width: 280px;
+  height: 100%;
+  border: 0px;
+}
+
+.ant-drawer-body .reg .reg_inf > span {
+  height: 100%;
+  line-height: 30px;
+}
+
+.ant-drawer-body .reg > p {
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.ant-drawer-body .reg > p b {
+  color: blue;
+}
+
+.ant-drawer-body .login {
+  width: 100%;
+}
+
+.ant-drawer-body .login h2 {
+  font-size: 36px;
+  height: 40px;
+  line-height: 40px;
+  color: #fff;
+}
+
+.ant-drawer-body .login h6 {
+  font-size: 16px;
+  height: 20px;
+  line-height: 20px;
+  color: #fff;
+}
+
+.ant-drawer-body .login .login_inf {
+  height: 30px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.ant-drawer-body .login .login_inf input {
+  width: 280px;
+  height: 100%;
+  border: 0px;
+}
+
+.ant-drawer-body .login .login_inf > span {
+  height: 100%;
+  line-height: 30px;
+}
+
+.ant-drawer-body .login .btn_ground {
+  display: flex;
+  justify-content: space-between;
+}
+
+.ant-drawer-body .login .btn_ground > div {
+  width: 40px;
+  height: 40px;
+  background-color: rgba(219, 214, 214, 0.4);
+  border-radius: 50%;
+}
+
+.ant-drawer-body .login .btn_ground > div > i {
+  width: 40px;
+  height: 100%;
+}
+
+.ant-drawer-body .login .btn_ground > div > i > svg {
+  width: 20px;
+  height: 20px;
+  margin-top: 10px;
+}

@@ -80,13 +80,12 @@ async function find(colName,query={},page,sk){
     let col = db.collection(colName);//获取集合
     if(page){//如果传页数，就一定要传sk数量获取部分数据
         page=page-1;
-        if(Array.isArray(query)){result = await col.find({$or:query}).skip(sk*page-0).limit(sk).toArray()}
-        else{result = await col.find(query).skip(sk*page-0).limit(sk).toArray()}
+        if(Array.isArray(query)){result = await col.find({$or:query}).skip(sk*page-0).limit(sk-0).toArray()}
+        else{result = await col.find(query).skip(sk*page-0).limit(sk-0).toArray();}
         
     }else{//否则返回全部符合query特征的数据
         if(Array.isArray(query)){result = await col.find({$or:query}).toArray();}
         else{result = await col.find(query).toArray();}
-        
     }
     client.close()//关闭数据库
     return result;

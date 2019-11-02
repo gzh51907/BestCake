@@ -15,4 +15,13 @@ router.post('/add',async(req,res)=>{
            res.send(formatData({code:0}));
     }
 })
+//获取所有订单信息
+router.get('/odlist',async(req,res)=>{
+    try{
+     let result = await mongo.find(colName);
+     res.send(formatData({data:result}))
+    }catch{
+      res.send(formatData({code:0}))
+    }
+})
 module.exports = router;

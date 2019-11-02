@@ -52,7 +52,7 @@ async function remove(colName,query){
  * 改
  * colName 字符串 执行操作的集合名字
  * query  {},根据要修改的数据特征选中数据对象
- * data   {},修改的内容覆盖选中的对象
+ * data    7,修改的内容覆盖选中的对象
 */
 async function update(colName,query,data){
 let{

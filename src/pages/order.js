@@ -9,7 +9,7 @@ import store from '../store'
 import {connect} from 'react-redux';
 const {bsk} = API;
 const mapStateToProps=(state)=>({
-   cart:state.Cart
+    cart:state.Cart
 })
 @connect(mapStateToProps)
 @withRouter

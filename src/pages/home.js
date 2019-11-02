@@ -78,7 +78,7 @@ async componentDidMount(){
                         onClose={this.onClose}
                         visible={this.state.visible}
                         >
-                            <div >
+                            <div style={{color:"black"}}>
                             {
                                 placelist.map((item,index)=><p key={index}  style={{width:50,display:"inline-block"}} >
                                     <span  onClick={this.addit.bind(this,item)}  style={{width:50}}>

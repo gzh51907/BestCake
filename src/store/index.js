@@ -27,7 +27,7 @@ function reducer(state = State,{type,payload}){
             }
         }
         case 'CHANGE_QTY':{//payload传商品名和新的数量过来，更新该商品的数量
-           return{ 
+        return{ 
             ...state,
             Cart:state.Cart.map(item=>{
                 if(item.name==payload.name){

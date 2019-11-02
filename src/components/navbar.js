@@ -2,7 +2,16 @@ import React, { Component } from "react";
 import { withState } from "../hoc";
 import { Menu, Icon, Badge } from 'antd';
 import { withRouter } from 'react-router-dom' //引入withRouter
+import {connect} from 'react-redux';
+
+const mapStateToProps=(state)=>{
+    return{
+        cartlength:state.Cart.length
+    }
+    }
 @withRouter
+// 用户获取state数据
+@connect(mapStateToProps)
 class Navbar extends Component {
 
     componentDidMount() {
@@ -13,6 +22,7 @@ class Navbar extends Component {
     render() {
         let { history } = this.props
         let { navlist, selected, cartlength } = this.props.data;
+        console.log(111)
         // console.log(navlist);
         return (
             <div style={{ height: 80, lineHeight: 80 }}>

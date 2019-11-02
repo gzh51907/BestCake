@@ -2,7 +2,22 @@ import React, { Component } from "react";
 import Api from "@/api"
 import { Carousel ,Layout , InputNumber ,Row,Col} from 'antd';
 import '@/css/detail.scss'
-// const { Content } = Layout;
+// import { getFileItem } from "antd/lib/upload/utils";
+import { connect } from 'react-redux';
+const mapStateToProps=(state)=>{
+    return{
+        cart:state.Cart
+    }
+    }
+const mapDispatchToProps = dispatch => {
+    return {
+        ADD_TO_CART:({iname,goodsnum})=>{dispatch({type:'ADD_TO_CART',payload:{name:iname,num:goodsnum}})},//payload传新的商品名name和数量num过来添加
+        CHANGE_QTY:({iname,goodsnum})=>{dispatch({type:'CHANGE_QTY',payload:{name:iname,num:goodsnum}})},//payload传商品名name和新的数量num过来，更新该商品的数量
+        dispatch//可自定义action或什么不传获取全部Cart
+}
+}
+
+@connect(mapStateToProps,mapDispatchToProps)
 class Detail extends Component{
 
     state ={
@@ -12,10 +27,50 @@ class Detail extends Component{
         Size:null,
         CurrentPrice:null,
         str_con:null,
+        showha:false,
+        iname:null
     }
 
-onChange(value) {
+    AddToCart=({iname,goodsnum})=>{
+        let props =this.props;
+        let isok = false;
+        let cart =props.cart
+        cart.forEach(i=>{//如果购物车已存在就增加数量
+            if(i.name==iname){ isok=true}
+        })
+        if(isok){props.CHANGE_QTY({iname,goodsnum})}
+        else{props.ADD_TO_CART({iname,goodsnum})}
+    };
+
+    buynow = ({iname,goodsnum})=>{
+        console.log({iname,goodsnum})
+        this.AddToCart({iname,goodsnum});
+        this.setState({
+            showha:true
+        })
+    };
+    gocart=({iname,goodsnum})=>{
+        this.AddToCart({iname,goodsnum});
+        if(localStorage.getItem("phone")){
+            this.props.history.push("/cart")     
+        }else{
+            this.props.history.push("/mine") 
         }
+    };
+    goorder=({iname,goodsnum})=>{
+        this.AddToCart({iname,goodsnum});
+        if(localStorage.getItem("phone")){
+            this.props.history.push("/order")     
+        }else{
+            this.props.history.push("/mine") 
+        }
+    };
+
+    showit=()=>{
+        this.setState({
+            showha:false
+        })
+    };
 
     async componentDidMount(){
         let name = this.props.location.query;
@@ -23,11 +78,13 @@ onChange(value) {
         console.log(data)
             this.setState({
                 detaildata:data[0],
+                iname:data[0].Name,
                 Size:data[0].Size,
                 CurrentPrice:data[0].CurrentPrice,
                 str_con : data[0].imgurl.slice(37,39)
             })
 
+            document.title=name;
             //图片处理
                 var res = [];
             if(this.state.str_con){
@@ -52,7 +109,7 @@ onChange(value) {
     }
 
     render(){
-        let {piclist,detaildata,Size,goodsnum,CurrentPrice} = this.state;
+        let {piclist,detaildata,Size,goodsnum,CurrentPrice,showha,iname} = this.state;
         console.log(detaildata)
             if(detaildata){
                 return(
@@ -342,16 +399,73 @@ onChange(value) {
                             </div>
                         </div>
                         </div>
-                        <div className="purchase-a">
+                        <div className="purchase-a" onClick={this.goorder.bind(this,{iname,goodsnum})}>
                             <div className="purchase-1">
                             立即购买
                             </div>
                         </div>
-                        <div className="purchase-b">
+                        <div className="purchase-b" onClick={this.buynow.bind(this,{iname,goodsnum})}>
                             <div className="purchase-2">
                         加入购物车
                             </div>
                         </div>
+                    </div>
+
+                    <div style={(showha)?{display:'block'}:{display:'none'}}>
+                    <div className="zhezhao" style={{
+                        position: 'fixed',
+                        background: 'rgb(0, 0, 0)',
+                        zIndex: 10000200,
+                        left: 0,
+                        top: 0,
+                        bottom: 0,
+                        width: '100%',
+                        height: 1499,
+                        opacity: 0.8,
+                        
+
+                    }}>
+                        <div style={{
+                            position: 'fixed',
+                            left: -4,
+                            top:' 50.53vw',
+                            zIndex: 100002001
+                        }}>
+                            <div style={{
+                                marginLeft:50,
+                                marginRight: 'auto',
+                                width: '77.33vw',
+                                background: '#fff',
+                                textAlign: 'center',
+                                borderRadius: 2,
+                                display: 'inline-block',
+                                zIndex:12345,
+                                opacity:1
+
+                            }}>
+                                <div style={{
+                                paddingTop:'10.66vw',color:'#333',
+                                fontSize:' 4vw', margin:'0 6.33vw', marginBottom:'15.2vw'
+                                }}>
+                                    成功添加到购物车
+                                </div>
+
+                                <div onClick={this.showit}
+                                style={{color:'#000', fontSize: '4vw', float:'left', width:'38.265vw',fontWeight:"bold",
+                                marginBottom:'4vw'}}>
+                                    再看看
+                                </div>
+                                <div style={{width:'0.266vw', height:'5.33vw', float:'left', background:'#999',ontWeight:"bold",
+                                marginTop: '1vw'}}>
+                                    &nbsp;
+                                </div>
+                                <div onClick={this.gocart.bind(this,{iname,goodsnum})}
+                                style={{color:'#02d3d6',fontSize: '4vw', float:'left', width:'38.265vw', marginBottom:'4vw'}}>
+                                    去结算
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     </div>
                     </Layout>
                 )

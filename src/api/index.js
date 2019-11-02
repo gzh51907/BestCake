@@ -45,6 +45,15 @@ export async function check_login(datas, config = {}) {
     });
     return data;
 }
+// 未登录前渲染本地的购物车
+export async function logout_cart(datas, config = {}) {
+    let { data } = await bsk.get('/logout_goods/cart', {
+        params: {
+            til_list: datas,
+        }
+    });
+    return data;
+}
 
 export default {
     get_homedata,
@@ -52,6 +61,7 @@ export default {
     check_phone,
     create_inf,
     check_login,
+    logout_cart,
     bsk
 };
 // export default bsk;

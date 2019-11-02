@@ -27,6 +27,7 @@ class Mine extends Component {
                     <Route path={match.path + "/order"} component={Order} />
                     <Route path={match.path + "/address"} component={Address} />
                     <Route path={match.path + "/minehome"} component={MineHome} />
+                    <Route path={match.path} component={MineHome} exact />
                     <Route path={match.path + "/userinf"} component={UserInf} />
                 </Switch>
             </div>

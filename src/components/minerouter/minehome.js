@@ -4,46 +4,51 @@ import '../../pages/Mine/Mine.scss';
 import 'antd/dist/antd.css';
 import Api from '../../api';
 import { connect } from 'react-redux';
-const mapStateToProps = (state) => ({
-    acount: state.acount
+const mapStateToProps = (data) => ({
+    acount: data.acount,
+    data: data
 })
 // console.log();
 @connect(mapStateToProps)
 class Mine extends Component {
-    state = {
-        isok: true,
-        // phone: '12345678912',
-        visible: true,//drawer
-        random: '',
-        show: false,
-        regPhone: '',
-        regCode: '',
-        logPhone: '',
-        logPass: '',
-        regSwitch: false,
-        menu: [
-            {
-                con: '会员等级',
-                num: 'V0',
-                path: ''
-            },
-            {
-                con: '吉致币',
-                num: '0',
-                path: '/money'
-            },
-            {
-                con: '优惠券',
-                num: '0',
-                path: '/discount'
-            },
-            {
-                con: '兑换券',
-                num: '0',
-                path: '/voucher'
-            }
-        ]
+    constructor(props) {
+        super(props);
+        this.state = {
+            isok: true,
+            // phone: '12345678912',
+            visible: true,//drawer
+            random: '',
+            show: false,
+            regPhone: '',
+            regCode: '',
+            logPhone: '',
+            logPass: '',
+            regSwitch: false,
+            menu: [
+                {
+                    con: '会员等级',
+                    num: 'V0',
+                    path: ''
+                },
+                {
+                    con: '吉致币',
+                    num: '0',
+                    path: '/money'
+                },
+                {
+                    con: '优惠券',
+                    num: '0',
+                    path: '/discount'
+                },
+                {
+                    con: '兑换券',
+                    num: '0',
+                    path: '/voucher'
+                }
+            ]
+        }
     }
+
     componentDidMount() {
         let { acount } = this.props;
         // 如果已登录显示我的
@@ -65,8 +70,8 @@ class Mine extends Component {
         // console.log('local', local);
         this.randomCode();
 
-        // console.log('props:', this.porps);
-        console.log('acount:', acount);
+        // console.log('props:', this.props);
+        // console.log('acount:', acount);
     }
 
     goto = (path) => {
@@ -84,13 +89,13 @@ class Mine extends Component {
 
     onClose = () => {
         let local = localStorage.getItem('phone');
-        console.log('local', local)
+        // console.log('local', local);
         if (local) {
             this.setState({
                 visible: false,
             });
         } else {
-
+            history.go(-2);
         }
 
     };

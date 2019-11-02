@@ -18,6 +18,7 @@ class Money extends Component {
                     <Icon type="left" onClick={this.goback} />
                 </div>
                 <h3 style={{ width: '100%', textAlign: 'center', marginTop: 50 }}>无可用币</h3>
+
             </div>
         )
     }

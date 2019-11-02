@@ -43,8 +43,10 @@ class Detail extends Component{
     };
 
     buynow = ({iname,goodsnum})=>{
-        console.log({iname,goodsnum})
+   
         this.AddToCart({iname,goodsnum});
+        // console.log(JSON.stringify(usergoods,{title:iname,qty:goodsnum}))
+        localStorage.setItem('usergoods',JSON.stringify({title:iname,qty:goodsnum}))
         this.setState({
             showha:true
         })
@@ -59,6 +61,7 @@ class Detail extends Component{
     };
     goorder=({iname,goodsnum})=>{
         this.AddToCart({iname,goodsnum});
+        localStorage.setItem('usergoods',JSON.stringify({title:iname,qty:goodsnum}))
         if(localStorage.getItem("phone")){
             this.props.history.push("/order")     
         }else{

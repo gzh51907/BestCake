@@ -16,6 +16,11 @@ class Navbar extends Component {
 
     componentDidMount() {
         // console.log(this.props)
+        let arr = document.querySelectorAll(".ant-menu-item");
+        for(var i=0; i<arr.length;i++){
+            arr[i].style.paddingTop="10px"
+        }
+
 
     }
 

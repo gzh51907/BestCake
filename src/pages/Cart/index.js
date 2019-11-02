@@ -4,45 +4,55 @@ import 'antd/dist/antd.css';
 import './Cart.scss';
 import MyContext from '../../context';
 import Recommend from '../../components/recommend/index';
+import Api from '../../api';
+import { connect } from 'react-redux';
 
 let plainOptions = [];//全选的初始化
 let defaultCheckedList = [];//默认选中的初始化
-
+const mapStateToProps = (data) => ({
+    cart: data.Cart,
+    data: data
+})
+@connect(mapStateToProps)
 class App extends Component {
-    state = {
-        checkAll: true,
-        sumList: [],
-        checkedList: defaultCheckedList,
-        totalPrice: '1111.00',
-        datalist: [
-            {
-                title: '一见倾心',
-                image: '../../../assest/makalong.png',
-                weight: '300g',
-                promotion_price: '88.00',
-                price: '198.00',
-                type: '爆款直降',
-                qty: 5
-            },
-            {
-                title: '马卡龙の吻',
-                image: '../../../assest/makalong.png',
-                weight: '1300g',
-                promotion_price: '188.00',
-                price: '198.00',
-                type: '爆款直降',
-                qty: 3
-            }, {
-                title: 'Wishing Angel',
-                image: '../../../assest/makalong.png',
-                weight: '2300g',
-                promotion_price: '288.00',
-                price: '198.00',
-                type: '爆款直降',
-                qty: 2
-            },
-        ]
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            checkAll: true,
+            sumList: [],
+            checkedList: defaultCheckedList,
+            totalPrice: '1111.00',
+            datalist: [
+                {
+                    title: '一见倾心',
+                    image: '../../../assest/makalong.png',
+                    weight: '300g',
+                    promotion_price: '88.00',
+                    price: '198.00',
+                    type: '爆款直降',
+                    qty: 5
+                },
+                {
+                    title: '马卡龙の吻',
+                    image: '../../../assest/makalong.png',
+                    weight: '1300g',
+                    promotion_price: '188.00',
+                    price: '198.00',
+                    type: '爆款直降',
+                    qty: 3
+                }, {
+                    title: 'Wishing Angel',
+                    image: '../../../assest/makalong.png',
+                    weight: '2300g',
+                    promotion_price: '288.00',
+                    price: '198.00',
+                    type: '爆款直降',
+                    qty: 2
+                },
+            ]
+        };
+    }
+
     //反选
     onChange = (title, e) => {
         if (e.target.checked && !defaultCheckedList.includes(title)) {
@@ -82,7 +92,7 @@ class App extends Component {
         })
         this.changeSum()
     }
-    componentDidMount() {
+    async componentDidMount() {
         let { datalist } = this.state;
         let arr = [];
         //渲染datalist的title来实现
@@ -90,8 +100,24 @@ class App extends Component {
             arr.push(item.title);
         })
         defaultCheckedList = plainOptions = arr;
+        this.changeSum();
+        // console.log("cart:", this.props);
 
-        this.changeSum()
+        // 未登录前，查询stroage的信息发送请求数据渲染购物车
+        let user_res = localStorage.getItem("usergoods");
+        let phone_res = localStorage.getItem("phone");
+        let til_list = [];
+        // 未登录
+        if (!phone_res) {
+            let res = JSON.parse(user_res);
+            // console.log('user', res);
+            res.forEach(item => {
+                til_list.push(item.title);
+            })
+            console.log('til_list', til_list);
+            let response = await Api.logout_cart(til_list)
+            console.log('req', response);
+        }
     }
     changeSum() {
         let { sumList, datalist } = this.state;
@@ -153,22 +179,6 @@ class App extends Component {
                         })
                     }
                 </div>
-
-                {/* <div style={{ borderBottom: '1px solid #E9E9E9' }}>
-                    <Checkbox
-                        indeterminate={indeterminate}
-                        onChange={this.onCheckAllChange}
-                        checked={checkAll}
-                    >
-                        Check all
-                    </Checkbox>
-                </div>
-                <br />
-                <CheckboxGroup
-                    options={plainOptions}
-                    value={checkedList}
-                    onChange={this.onChange}
-                /> */}
 
                 <MyContext.Provider>
                     <Recommend></Recommend>

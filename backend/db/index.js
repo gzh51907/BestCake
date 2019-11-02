@@ -85,7 +85,7 @@ async function find(colName, query = {}, page, sk) {
 
     } else {//否则返回全部符合query特征的数据
         if (Array.isArray(query)) { result = await col.find({ $or: query }).toArray(); }
-        else { result = await col.find(query).toArray(); }
+        else { result = await col.find(query).toArray(); console.log('check_log:', result) }
 
     }
     client.close()//关闭数据库

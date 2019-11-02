@@ -3,11 +3,16 @@ import { Icon, Divider, Drawer, Button, Form, Input, message } from "antd";
 import '../../pages/Mine/Mine.scss';
 import 'antd/dist/antd.css';
 import Api from '../../api';
-console.log('api', Api);
+import { connect } from 'react-redux';
+const mapStateToProps = (state) => ({
+    acount: state.acount
+})
+// console.log();
+@connect(mapStateToProps)
 class Mine extends Component {
     state = {
         isok: true,
-        phone: '12345678912',
+        // phone: '12345678912',
         visible: true,//drawer
         random: '',
         show: false,
@@ -15,6 +20,7 @@ class Mine extends Component {
         regCode: '',
         logPhone: '',
         logPass: '',
+        regSwitch: false,
         menu: [
             {
                 con: '会员等级',
@@ -39,24 +45,34 @@ class Mine extends Component {
         ]
     }
     componentDidMount() {
-        console.log(this.props);
-        let { phone } = this.state;
-        let head = phone.substring(0, 3);
-        let foot = phone.substring(7);
-        phone = `${head}****${foot}`;
-        this.setState({
-            phone
-        })
+        let { acount } = this.props;
+        // 如果已登录显示我的
+        let local = localStorage.getItem('phone');
+        if (local) {
+            acount = local;
+            let head = acount.substring(0, 3);
+            let foot = acount.substring(7);
+            acount = `${head}****${foot}`;
+            this.setState({
+                visible: false,
+                // phone
+            });
+        } else {
+            this.setState({
+                visible: true,
+            });
+        }
+        // console.log('local', local);
+        this.randomCode();
 
-        this.randomCode()
-
-        //
+        // console.log('props:', this.porps);
+        console.log('acount:', acount);
     }
+
     goto = (path) => {
-        let { history, match } = this.props;
-        console.log(this.props);
-        console.log(path);
-        // history.push(path);
+        let { history } = this.props;
+        // console.log(this.props);
+        // console.log(path);
         history.push('/mine' + path);
     }
     // 登录框---------------------
@@ -67,9 +83,16 @@ class Mine extends Component {
     };
 
     onClose = () => {
-        this.setState({
-            visible: false,
-        });
+        let local = localStorage.getItem('phone');
+        console.log('local', local)
+        if (local) {
+            this.setState({
+                visible: false,
+            });
+        } else {
+
+        }
+
     };
 
     //  登录与注册
@@ -106,7 +129,6 @@ class Mine extends Component {
         this.setState({
             regPhone: e.target.value
         })
-        // console.log('input', this.state.regPhone)
     }
     // 获取reg验证码的内容
     handleRegCode = (e) => {
@@ -129,56 +151,85 @@ class Mine extends Component {
     // 验证是否已注册
     checkPhone = async () => {
         let { regPhone } = this.state;
-        regPhone = Number(regPhone);
-        console.log(regPhone);
-        let res = await Api.check_phone({
-            phone: regPhone
-        })
-        console.log(res)
+        let res = await Api.check_phone(regPhone)
         if (res.code === 1) {
-            let msg = "账号已注册，请更换！"
-            this.error(msg);
+            this.setState({
+                regSwitch: true
+            })
+        } else if (res.code === 0) {
+            this.setState({
+                regSwitch: false
+            })
         }
     }
     // 注册验证
-    checkReg = () => {
-        let { regCode, random, regPhone } = this.state;
+    checkReg = async () => {
+        let { regCode, random, regPhone, regSwitch } = this.state;
         let msg = '';
         let reg = /^1[3-9]\d{9}$/;
         let result = reg.test(regPhone);
         if (regPhone === '') {
             msg = '请输入手机号码！';
+            this.error(msg);
         }
         else if (!result) {
             msg = '手机格式不正确！';
+            this.error(msg);
         } else if (regCode.toLowerCase() !== random.toLocaleLowerCase()) {
             msg = '验证码不正确！';
-            // console.log('no', result)
-        } else if (regPhone !== '' && result && regCode.toLowerCase() === random.toLocaleLowerCase()) {
-            this.setState({
-                visible: false
+            this.error(msg);
+        } else if (regSwitch === false) {
+            msg = '账号已注册，请更换！';
+            this.error(msg);
+        } else if (regPhone !== '' && result && regCode.toLowerCase() === random.toLocaleLowerCase() && regSwitch === true) {
+            let password = regPhone.slice(5);
+            let res = await Api.create_inf({
+                phone: regPhone,
+                password
             })
+            this.setState({
+                visible: false,
+            })
+            this.localSave(regPhone);
         }
-        this.error(msg);
+
     }
     // 错误提示信息
     error = (msg) => {
         message.error(msg);
     };
+    localSave = (phone) => {
+        localStorage.setItem('phone', phone);
+        this.setState({
+            visible: false,
+        })
+    }
     // 登录验证
-    checkLog = () => {
-        let { logPhone, logPass, regPhone } = this.state;
-        console.log(logPhone, logPass)
+    checkLog = async () => {
+        let { logPhone, logPass } = this.state;
+        // console.log(logPhone, logPass)
+        let res = await Api.check_login({
+            logPhone,
+            logPass
+        })
+        // console.log('checklog', res);
+        if (res.code === 0) {
+            let msg = "账号或密码错误！";
+            this.error(msg);
+        } else if (res.code === 1) {
+            //登录成功,存信息至storage
+            this.localSave(logPhone);
+        }
     }
 
     render() {
-        // const { getFieldDecorator } = this.props.form;
-        let { phone, menu, isok, random, show, regPhone, regCode, logPhone, logPass } = this.state;
+        let { menu, isok, random, show, regPhone, regCode, logPhone, logPass } = this.state;
+        let { acount } = this.props;
         return (
             <div className="mine">
                 <header>
                     <img src='../../assest/touxiang.jpg' onClick={this.goto.bind(this, '/userinf')} />
-                    <h6>{phone}</h6>
+                    <h6>{acount}</h6>
                 </header>
                 <ul>
                     {
@@ -211,9 +262,6 @@ class Mine extends Component {
                 </div>
                 {/* 登录框 */}
                 <div className="login">
-                    <Button type="primary" onClick={this.showDrawer}>
-                        Open
-                    </Button>
                     <Drawer
                         placement="right"
                         closable={false}
@@ -222,15 +270,14 @@ class Mine extends Component {
                         width={'100%'}
                         drawerStyle={{ backgroundColor: 'rgb(54,209,220)' }}
                     >
-                        <div onClick={this.onClose}>
-                            <Icon type="left" style={{ color: "#fff" }} />
+                        <div>
+                            <Icon type="left" style={{ color: "#fff" }} onClick={this.onClose} />
                         </div>
                         {/* 注册 */}
                         <div className="reg" style={isok ? { display: 'block' } : { display: 'none' }}>
                             <h2>快速登录</h2>
                             <h6>手机号</h6>
                             <div className="reg_inf">
-                                {/* <input ref='regPhone' value={regPhone} onBlur={this.handleRegPhone} ref={el => { this.inputDOM = el }} /> */}
                                 <Input onChange={this.handleRegPhone} onBlur={this.checkPhone} />
                                 <span onClick={this.showCode}>发送验证码</span>
                             </div>

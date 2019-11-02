@@ -1,48 +1,60 @@
 import React, { Component } from "react";
 import { Icon, Divider, Modal, Button } from "antd";
 import "./userinf.scss";
+import { connect } from 'react-redux';
+const mapStateToProps = (data) => ({
+    acount: data.acount
+})
+// console.log();
+@connect(mapStateToProps)
 class UserInf extends Component {
     state = {
-        phone: '12345678912',
         sex: '男',
-        visible: false
+        user_visible: false
     }
     componentDidMount() {
-        let { phone } = this.state;
-        let head = phone.substring(0, 3);
-        let foot = phone.substring(7);
-        phone = `${head}****${foot}`;
-        this.setState({
-            phone
-        })
+        let { acount } = this.props;
+        let phone = localStorage.getItem("phone");
+        acount = phone;
+        let head = acount.substring(0, 3);
+        let foot = acount.substring(7);
+        acount = `${head}****${foot}`;
+        console.log("acount", acount, "phone", phone);
+        console.log(this.props);
+        // this.setState({
+        //     phone
+        // })
     }
+    // componentWillUnmount() {
+    //     this.props.acount
+    // }
     // 点击出现对话框
     showModal = () => {
         this.setState({
-            visible: true,
+            user_visible: true,
         });
     };
-    // 确认
-    handleOk = e => {
-        // console.log(e);
+    // 确认退出登录
+    handleOk = () => {
+        let { history } = this.props;
+        // console.log("e", e);
+        localStorage.removeItem("phone");
         this.setState({
-            visible: false,
+            user_visible: false,
         });
+        history.push('/home');
     };
     // 取消
     handleCancel = e => {
         // console.log(e);
         this.setState({
-            visible: false,
+            user_visible: false,
         });
     };
 
-    // 退出登录
-    logOut = () => {
-
-    }
     render() {
-        let { phone, sex } = this.state;
+        let { phone, sex, user_visible } = this.state;
+        let { acount } = this.props;
         return (
             <div className="userinf">
                 <ul>
@@ -72,7 +84,7 @@ class UserInf extends Component {
                     <Divider />
                     <li>
                         <span>手机号</span>
-                        <span>{phone}<Icon type="right" /></span>
+                        <span>{acount}<Icon type="right" /></span>
                     </li>
                     <Divider />
                     <li>
@@ -83,9 +95,10 @@ class UserInf extends Component {
                 <div className="logout" onClick={this.showModal}>退出登录</div>
                 <div>
                     <Modal
-                        visible={this.state.visible}
+                        visible={user_visible}
                         onOk={this.handleOk}
                         onCancel={this.handleCancel}
+                        centered
                     >
                         <p>是否退出</p>
                     </Modal>

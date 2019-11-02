@@ -16,10 +16,11 @@ class App extends Component {
                     <Route path="/cart" component={Cart} />
                     <Route path="/list" component={List} />
                     <Route path="/mine" component={Mine} />
-                    <Route path="/order" component={Order}/>
+                    <Route path="/order" component={Order} />
                     <Route path="/detail" component={Detail} />
                     <Redirect from="/" to="/home" exact />
                 </Switch>
+                <Navbar></Navbar>
             </div>
         )
     }

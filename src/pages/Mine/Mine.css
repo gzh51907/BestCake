@@ -124,7 +124,7 @@
 }
 
 .ant-drawer-body .reg .reg_inf input {
-  width: 280px;
+  width: 270px;
   height: 100%;
   border: 0px;
 }
@@ -132,6 +132,39 @@
 .ant-drawer-body .reg .reg_inf > span {
   height: 100%;
   line-height: 30px;
+  text-align: center;
+  width: 90px;
+  background-color: #ccc;
+  border-radius: 10px;
+}
+
+.ant-drawer-body .reg .code_box {
+  height: 70px;
+}
+
+.ant-drawer-body .reg .random_code {
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.ant-drawer-body .reg .random_code input {
+  width: 270px;
+  height: 100%;
+  border: 0px;
+  float: left;
+}
+
+.ant-drawer-body .reg .random_code > span {
+  height: 30px;
+  line-height: 30px;
+  font-size: 20px;
+  text-align: center;
+  width: 90px;
+  background-color: #ccc;
+  border-radius: 10px;
+  letter-spacing: 3px;
+  padding: 0 10px;
+  float: right;
 }
 
 .ant-drawer-body .reg > p {
@@ -141,6 +174,29 @@
 
 .ant-drawer-body .reg > p b {
   color: blue;
+}
+
+.ant-drawer-body .reg .btn_ground {
+  display: flex;
+  justify-content: space-between;
+}
+
+.ant-drawer-body .reg .btn_ground > div {
+  width: 40px;
+  height: 40px;
+  background-color: rgba(219, 214, 214, 0.4);
+  border-radius: 50%;
+}
+
+.ant-drawer-body .reg .btn_ground > div > i {
+  width: 40px;
+  height: 100%;
+}
+
+.ant-drawer-body .reg .btn_ground > div > i > svg {
+  width: 20px;
+  height: 20px;
+  margin-top: 10px;
 }
 
 .ant-drawer-body .login {
@@ -169,7 +225,7 @@
 }
 
 .ant-drawer-body .login .login_inf input {
-  width: 280px;
+  width: 340px;
   height: 100%;
   border: 0px;
 }

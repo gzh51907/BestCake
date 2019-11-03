@@ -24,13 +24,6 @@ router.use(express.urlencoded({//处理静态资源
     extended: true
 }), express.json())
 //使用路由
-<<<<<<< HEAD
-router.use('/listpages',listrouter);//使用listpages路由
-router.use('/order',orderrouter);//使用订单路由
-router.use('/home',homerouter);//使用homerouter路由
-router.use('/detail_inf',detailouter);//使用detailrouter路由
-
-=======
 router.use('/listpages', listrouter);//使用listpages路由
 router.use('/home', homerouter);//使用homerouter路由
 router.use('/detail_inf', detailouter);//使用homerouter路由
@@ -39,5 +32,4 @@ router.use('/order', orderrouter);//使用订单路由
 router.use('/create_inf', createrouter);//使用订单路由
 router.use('/logout_goods', logoutrouter);//使用订单路由
 router.use('/ad', adlogrouter);//使用管理员信息查询路由
->>>>>>> c5c8a7e2efacf595972f21889f440e4a876850fe
 module.exports = router;//导出路由

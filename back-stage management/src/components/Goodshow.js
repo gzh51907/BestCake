@@ -1,8 +1,7 @@
-import React ,{Commponent} from "react";
+import React  from "react";
 import { Table, Input, Button, Popconfirm, Form } from 'antd';
 const EditableContext = React.createContext();
 import Api from "../api"
-
 
 let changename = null;
 let changevalue = null;
@@ -29,7 +28,6 @@ this.setState({ editing }, () => {
 };
 
 save = e => {
-
 const { record, handleSave } = this.props;
 this.form.validateFields((error, values) => {
     if (error && error[e.currentTarget.id]) {

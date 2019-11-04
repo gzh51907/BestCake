@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Api from '../api';
-import { Table, Divider, Tag } from 'antd';
+import { Table, Tag ,Popconfirm} from 'antd';
 let{bsk} = Api;
 class Order extends Component{
     constructor(){
@@ -41,9 +41,9 @@ class Order extends Component{
                   {goodsinf.map((item,idx) => {
                       let color = idx%2==0?'geekblue':'green'
                     return (
-                      <Tag style={{width:'10vw',padding:'0',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}} color={color} key={idx}>
+                      <Tag style={{width:'10vw',padding:'0',overflow:'hidden',textOverflow:'ellipsis'}} color={color} key={idx}>
                         <img style={{width:'3vw'}}  src={item.imgurl}/>
-                        <span>{item.Name}/{item.Size}</span>
+                        <span>{item.num}*{item.Name}/{item.Size}</span>
                       </Tag>
                     );
                   })}
@@ -58,24 +58,19 @@ class Order extends Component{
             {
               title: '操作',
               key: 'action',
-              render: ()=>{
-                  return(  <span>
-                    <a onClick={this.delorder}>Delete</a>
-                  </span>)
+              render: (text,record)=>{
+                  return(   <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(record.key)}>
+                  <a>Delete</a>
+                </Popconfirm>)
               }
               
             },
           ]
-    }
+    },
+    this.handleDelete = this.handleDelete.bind(this);
 }
     async componentDidMount(){
-       let {data} = await bsk.get('/order/odlist',{
-           params:{
-               page:1,
-               sk:5
-           }
-       })
-       console.log(data.data)
+       let {data} = await bsk.get('/order/odlist')
        let odlist =data.data.map((item,idx)=>{
            return({
                key:idx,
@@ -84,20 +79,23 @@ class Order extends Component{
                message:item.message?item.message:'无留言',
                adress:item.userinf.adress,
                goodsinf:item.goodsinf,
-               totalprice:item.totalprice
+               totalprice:item.totalprice,
+               _id:item._id
            })
        })
-       console.log(odlist)
        this.setState({
            odlist
        })
     }
-    delorder=()=>{
-
-    }
-    handleTableChange=(e)=>{
-     console.log(e)
-    }
+    handleDelete = key => {//点击删除并确定ok，就会执行
+        const odlist = [...this.state.odlist];
+        odlist.forEach(i=>{if(i.key==key){bsk.get('/order/delodlist',{
+          params:{
+            id:i._id
+          }
+        })}})
+        this.setState({ odlist: odlist.filter(item => item.key !== key) });
+      };
     render(){
         let {odlist,columns,pagination} = this.state;
         if(odlist.length==0){

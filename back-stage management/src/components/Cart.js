@@ -39,7 +39,6 @@ class Cart extends Component{
 }
     async componentDidMount(){
        let {data} = await bsk.get('/cart/all')
-       console.log(data.data)
        let cartlist =data.data.map((item,idx)=>{
            return({
                key:idx,
@@ -48,7 +47,6 @@ class Cart extends Component{
                _id:item._id
            })
        })
-       console.log(cartlist)
        this.setState({
            cartlist
        })

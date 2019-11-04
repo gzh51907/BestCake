@@ -71,7 +71,6 @@ class Order extends Component{
 }
     async componentDidMount(){
        let {data} = await bsk.get('/order/odlist')
-       console.log(data.data)
        let odlist =data.data.map((item,idx)=>{
            return({
                key:idx,
@@ -84,7 +83,6 @@ class Order extends Component{
                _id:item._id
            })
        })
-       console.log(odlist)
        this.setState({
            odlist
        })

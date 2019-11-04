@@ -31,17 +31,6 @@ function reducer(state = State, { type, payload }) {
             return {
                 ...state,
                 Cart: state.Cart.map(item => {
-                    if (item.Name == payload.Name) {
-                        item.qty = item.qty + payload.qty
-                    }
-                    return item
-                })
-            }
-        }
-        case 'CHANGE_QTYS': {//payload传商品名和新的数量过来，更新该商品的数量
-            return {
-                ...state,
-                Cart: state.Cart.map(item => {
                     if (item.name == payload.name) {
                         item.num = item.num + payload.num
                     }

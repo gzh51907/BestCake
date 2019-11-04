@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 
 let plainOptions = [];//全选的初始化
 let defaultCheckedList = [];//默认选中的初始化
+
 const mapStateToProps = (data) => ({
     cart: data.Cart,
     data: data
@@ -17,9 +18,6 @@ const mapDispathToProps = dispatch => {
     return {
         loginCart(payload) {
             dispatch({ type: 'CHANGE_CART', payload })
-        },
-        updateQty(payload) {
-            dispatch({ type: 'CHANGE_QTYS', payload })
         },
         dispatch
     }
@@ -66,12 +64,10 @@ class App extends Component {
         let phone_res = localStorage.getItem("phone");
         let newGoods = [];
         let obj = {};
-        console.log('11111', name, qty);
-        // ------------------未登录前------------------
+        let { dataList } = this.state;
+        // console.log('data:', dataList);
         if (!phone_res) {
-            let { dataList } = this.state;
             dataList.forEach(item => {
-                // console.log(item);
                 if (item.Name === name) {
                     item.qty = qty
                 }
@@ -82,20 +78,21 @@ class App extends Component {
             })
             // console.log('newGoods', JSON.stringify(newGoods));
             localStorage.setItem("usergoods", JSON.stringify(newGoods));
-            this.setState({
-                dataList
-            })
         } else {
-            // ---------------登录后--------------
-            // 把商品名字和数量传过去
-            let payload = {};
-            payload.Name = name;
-            payload.qty = 1;
-            console.log("pay", payload, 'qty', qty)
-            this.props.updateQty(payload);
-            console.log("now", this.props.cart)
+            dataList.forEach(item => {
+                if (item.Name === name) {
+                    item.qty = qty
+                }
+                obj.title = item.Name
+                obj.qty = item.qty
+                newGoods.push(obj)
+                obj = {}
+            })
+            localStorage.setItem("sumgoods", JSON.stringify(newGoods));
         }
-
+        this.setState({
+            dataList
+        })
         this.changeSum();
 
     }
@@ -105,10 +102,11 @@ class App extends Component {
         // 未登录前，查询stroage的信息发送请求数据渲染购物车
         let user_res = localStorage.getItem("usergoods");
         let phone_res = localStorage.getItem("phone");
+        let sumgoods = localStorage.getItem("sumgoods");
         let til_list = [];
         let obj = {};
         // ------------------------------------未登录购物车--------------------------
-        if (!phone_res) {
+        if (!phone_res && user_res) {
             let res = JSON.parse(user_res);
             res.forEach(item => {
                 // 整理Name发送请求
@@ -139,13 +137,14 @@ class App extends Component {
             defaultCheckedList = plainOptions = arr;
             this.changeSum();
 
-        } else {
+        } else if (phone_res) {
             // ----------------------------登录后购物车----------------------------------------
             // 获取stroage中登录用户的用户名去查找改用户的数据库购物车表
             let obj = {};
             let name_list = [];// 用于存合并
             let store_list = [];// 用于存到仓库的
-            let axios_list = [];// 用于存到仓库的
+            let axios_list = [];// 用于发送请求的
+            let sum = []
             // 发起请求()
             let goodsinf = await Api.login_cart(JSON.stringify(phone_res));
             // console.log('goodsinf', goodsinf);
@@ -162,60 +161,97 @@ class App extends Component {
                 name_list.push(obj);
                 obj = {};
             })
-            // 合并用户的购物车表信息与本地浏览存储的商品信息
-            user_res = JSON.parse(user_res)
-            // console.log('stroage的', user_res);
-            if (user_res.length > name_list.length) {
-                user_res.forEach(uitem => {
-                    name_list.forEach(nitem => {
-                        if (uitem.title === nitem.Name) {
-                            uitem.qty = uitem.qty * 1 + nitem.qty * 1
-                        }
-                    })
-                })
-                // 改键名
-                let obj = {};
-                user_res.forEach(item => {
-                    obj.Name = item.title;
-                    obj.qty = item.qty;
-                    store_list.push(obj);
-                    obj = {}
-                })
-            } else {
-                name_list.forEach(nitem => {
+            // -------------不存在合并后的sumgoods----------
+            if (!sumgoods) {
+                // 合并用户的购物车表信息与本地浏览存储的商品信息
+                user_res = JSON.parse(user_res);
+                // console.log('stroage的', user_res);
+                if (user_res.length > name_list.length) {
                     user_res.forEach(uitem => {
-                        if (uitem.title === nitem.Name) {
-                            nitem.qty = uitem.qty * 1 + nitem.qty * 1
+                        name_list.forEach(nitem => {
+                            if (uitem.title === nitem.Name) {
+                                uitem.qty = uitem.qty * 1 + nitem.qty * 1
+                            }
+                        })
+                    })
+                    // 改键名
+                    let obj = {};
+                    user_res.forEach(item => {
+                        obj.Name = item.title;
+                        obj.qty = item.qty;
+                        store_list.push(obj);
+                        obj = {}
+                    })
+                } else {
+                    name_list.forEach(nitem => {
+                        user_res.forEach(uitem => {
+                            if (uitem.title === nitem.Name) {
+                                nitem.qty = uitem.qty * 1 + nitem.qty * 1
+                            }
+                        })
+                    })
+                    store_list = name_list;
+                }
+                // 把整理好的数据存到仓库store
+                this.props.loginCart(store_list);
+                // 把整理好的合并数据存到本地
+                sum = user_res;
+                store_list.forEach(sitem => {
+                    sum.forEach(item => {
+                        if (sitem.Name === item.title) {
+                            item.qty = sitem.qty
                         }
                     })
                 })
-                store_list = name_list;
-            }
-            // 把整理好的数据存到仓库store
-            this.props.loginCart(store_list);
-            // 根据仓库的信息渲染购物车
-            //  处理格式（获取名字，查询数据库）
-            let storeObj = {};
-            this.props.cart[0].forEach(item => {
-                storeObj.Name = item.Name;
-                axios_list.push(storeObj);
-                storeObj = {}
-            })
-            let response = await Api.logout_cart(JSON.stringify(axios_list));
-            // console.log('cart', this.props.cart);
-            dataList = response.data;
-            // 整理Name的qty数量,拼接到请求回来的商品dataList中
-            store_list.forEach(item => {
-                dataList.map(itemd => {
-                    if (item.Name === itemd.Name) {
-                        itemd.qty = item.qty
-                    }
+                localStorage.setItem("sumgoods", JSON.stringify(sum));
+                // 根据仓库的信息渲染购物车
+                //  处理格式（获取名字，查询数据库）
+                let storeObj = {};
+                this.props.cart[0].forEach(item => {
+                    storeObj.Name = item.Name;
+                    axios_list.push(storeObj);
+                    storeObj = {}
                 })
-            })
-            this.setState({
-                dataList
-            })
-            console.log("data", dataList)
+                let response = await Api.logout_cart(JSON.stringify(axios_list));
+                // console.log('axios_list', axios_list);
+                // console.log('response', response);
+                dataList = response.data;
+                // 整理Name的qty数量,拼接到请求回来的商品dataList中
+                store_list.forEach(item => {
+                    dataList.map(itemd => {
+                        if (item.Name === itemd.Name) {
+                            itemd.qty = item.qty
+                        }
+                    })
+                })
+                this.setState({
+                    dataList
+                })
+
+            } else {
+                //--------存在sumgoods后-----------
+                // 直接把sumgoods拿出来发请求
+                sumgoods = JSON.parse(sumgoods);
+                let sumObj = {};
+                sumgoods.forEach(item => {
+                    sumObj.Name = item.title;
+                    axios_list.push(sumObj);
+                    sumObj = {};
+                })
+                let response = await Api.logout_cart(JSON.stringify(axios_list));
+                dataList = response.data;
+                sumgoods.forEach(item => {
+                    dataList.map(itemd => {
+                        if (item.title === itemd.Name) {
+                            itemd.qty = item.qty
+                        }
+                    })
+                })
+                this.setState({
+                    dataList
+                })
+
+            }
             //渲染dataList的Name来实现
             dataList.map(item => {
                 arr.push(item.Name);
@@ -241,7 +277,7 @@ class App extends Component {
             this.setState({
                 sumList
             })
-            console.log('sumList', sumList)
+            // console.log('sumList', sumList)
             //总计
             this.setState({
                 totalPrice: sumList.reduce((prev, item) => prev + item.CurrentPrice * item.qty, 0)
@@ -250,7 +286,8 @@ class App extends Component {
         } else {
             // ----------登录后--------------
             //获取仓库的数据计算总价
-            console.log("sum", this.props.cart)
+            console.log("cart", this.props.cart)
+            console.log("dataList", this.state.dataList)
             this.setState({
                 totalPrice: dataList.reduce((prev, item) => prev + item.CurrentPrice * item.qty, 0)
             })

@@ -48,6 +48,12 @@ function reducer(state = State, { type, payload }) {
                 Cart:payload
             }
         }
+        case 'CHANGE_CART': {//
+            return {
+                ...state,
+                Cart: [payload]
+            }
+        }
         case 'get': {
             return state;
         }

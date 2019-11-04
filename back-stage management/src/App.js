@@ -10,7 +10,6 @@ const { Header, Sider, Content } = Layout;
 import Useradd from './components/Useradd';
 import Useredit from './components/Useredit';
 import Goodshow from './components/Goodshow';
-import Goodsfixed from './components/Goodsfixed';
 import Goodsadd from './components/Goodsadd';
 import Order from './components/Order';
 import Cart from './components/Cart';
@@ -46,11 +45,6 @@ class App extends Component{
                         title:'商品查看',
                         component:Goodshow,
                         path:'/goodshow'
-                    },
-                    {
-                        title:'商品信息修改',
-                        component:Goodsfixed,
-                        path:'/goodsfixed'
                     },
                     {
                         title:'商品添加',

@@ -1,5 +1,4 @@
 import { createStore } from "redux";
-
 let State = {
     Cart: [
         {
@@ -44,8 +43,18 @@ function reducer(state = State, { type, payload }) {
                 Cart: []
             }
         }
+        case'ALL_CART':{//替换整个购物车
+            return{
+                Cart:payload
+            }
+        }
+        case 'CHANGE_CART': {//
+            return {
+                ...state,
+                Cart: [payload]
+            }
+        }
         case 'get': {
-            console.log(11)
             return state;
         }
         default: {//返回整个state

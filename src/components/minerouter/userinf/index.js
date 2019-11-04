@@ -19,15 +19,10 @@ class UserInf extends Component {
         let head = acount.substring(0, 3);
         let foot = acount.substring(7);
         acount = `${head}****${foot}`;
-        console.log("acount", acount, "phone", phone);
-        console.log(this.props);
-        // this.setState({
-        //     phone
-        // })
+        // console.log("acount", acount, "phone", phone);
+        // console.log(this.props);
     }
-    // componentWillUnmount() {
-    //     this.props.acount
-    // }
+
     // 点击出现对话框
     showModal = () => {
         this.setState({
@@ -43,6 +38,9 @@ class UserInf extends Component {
             user_visible: false,
         });
         history.push('/home');
+        // 清除storage的数据
+        localStorage.removeItem("usergoods");
+        localStorage.removeItem("sumgoods");
     };
     // 取消
     handleCancel = e => {

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Checkbox, InputNumber, Button } from "antd";
+import Navbar from '@/components/navbar';
 import 'antd/dist/antd.css';
 import './Cart.scss';
 import MyContext from '../../context';
@@ -9,11 +10,20 @@ import { connect } from 'react-redux';
 
 let plainOptions = [];//全选的初始化
 let defaultCheckedList = [];//默认选中的初始化
+
 const mapStateToProps = (data) => ({
     cart: data.Cart,
     data: data
 })
-@connect(mapStateToProps)
+const mapDispathToProps = dispatch => {
+    return {
+        loginCart(payload) {
+            dispatch({ type: 'CHANGE_CART', payload })
+        },
+        dispatch
+    }
+}
+@connect(mapStateToProps, mapDispathToProps)
 class App extends Component {
     constructor(props) {
         super(props);
@@ -21,35 +31,8 @@ class App extends Component {
             checkAll: true,
             sumList: [],
             checkedList: defaultCheckedList,
-            totalPrice: '1111.00',
-            datalist: [
-                {
-                    title: '一见倾心',
-                    image: '../../../assest/makalong.png',
-                    weight: '300g',
-                    promotion_price: '88.00',
-                    price: '198.00',
-                    type: '爆款直降',
-                    qty: 5
-                },
-                {
-                    title: '马卡龙の吻',
-                    image: '../../../assest/makalong.png',
-                    weight: '1300g',
-                    promotion_price: '188.00',
-                    price: '198.00',
-                    type: '爆款直降',
-                    qty: 3
-                }, {
-                    title: 'Wishing Angel',
-                    image: '../../../assest/makalong.png',
-                    weight: '2300g',
-                    promotion_price: '288.00',
-                    price: '198.00',
-                    type: '爆款直降',
-                    qty: 2
-                },
-            ]
+            totalPrice: '0.00',
+            dataList: [],
         };
     }
 
@@ -70,104 +53,339 @@ class App extends Component {
     };
     //全选
     onCheckAllChange = e => {
-        let { checkAll } = this.state;
         defaultCheckedList = e.target.checked ? plainOptions : [];
         this.setState({
             checkAll: e.target.checked,
         });
+        this.changeSum();
     };
     //改数量
-    changeQty = (idTitle, qty) => {
-        console.log(idTitle, qty);
-        let { datalist } = this.state;
-        datalist.forEach(item => {
-            // console.log(item);
-            if (item.title === idTitle) {
-                item.qty = qty
-            }
-        })
-        // console.log(newData);
+    changeQty = (name, qty) => {
+        let phone_res = localStorage.getItem("phone");
+        let newGoods = [];
+        let obj = {};
+        let { dataList } = this.state;
+        // console.log('data:', dataList);
+        if (!phone_res) {
+            dataList.forEach(item => {
+                if (item.Name === name) {
+                    item.qty = qty
+                }
+                obj.title = item.Name
+                obj.qty = item.qty
+                newGoods.push(obj)
+                obj = {}
+            })
+            // console.log('newGoods', JSON.stringify(newGoods));
+            localStorage.setItem("usergoods", JSON.stringify(newGoods));
+        } else {
+            dataList.forEach(item => {
+                if (item.Name === name) {
+                    item.qty = qty
+                }
+                obj.title = item.Name
+                obj.qty = item.qty
+                newGoods.push(obj)
+                obj = {}
+            })
+            localStorage.setItem("sumgoods", JSON.stringify(newGoods));
+        }
         this.setState({
-            datalist
+            dataList
         })
-        this.changeSum()
-    }
-    async componentDidMount() {
-        let { datalist } = this.state;
-        let arr = [];
-        //渲染datalist的title来实现
-        datalist.map(item => {
-            arr.push(item.title);
-        })
-        defaultCheckedList = plainOptions = arr;
         this.changeSum();
-        // console.log("cart:", this.props);
 
+    }
+
+    async componentDidMount() {
+        let { dataList } = this.state;
+        let arr = [];
         // 未登录前，查询stroage的信息发送请求数据渲染购物车
         let user_res = localStorage.getItem("usergoods");
         let phone_res = localStorage.getItem("phone");
+        let sumgoods = localStorage.getItem("sumgoods");
         let til_list = [];
-        // 未登录
-        if (!phone_res) {
+        let obj = {};
+        // ------------------------------------未登录购物车--------------------------
+        if (!phone_res && user_res) {
             let res = JSON.parse(user_res);
-            // console.log('user', res);
             res.forEach(item => {
-                til_list.push(item.title);
+                // 整理Name发送请求
+                obj.Name = item.title
+                til_list.push(obj);
+                obj = {};
             })
-            console.log('til_list', til_list);
-            let response = await Api.logout_cart(til_list)
-            console.log('req', response);
+            // 把本地storage的商品信息请求回来
+            let response = await Api.logout_cart(JSON.stringify(til_list));
+            // console.log('req', response);
+            dataList = response.data;
+            // 整理Name的qty数量,拼接到请求回来的商品dataList中
+            res.forEach(item => {
+                // console.log('qty', item.qty);
+                dataList.map(itemd => {
+                    if (item.title === itemd.Name) {
+                        itemd.qty = item.qty
+                    }
+                })
+            })
+            this.setState({
+                dataList
+            })
+            //渲染dataList的Name来实现
+            dataList.map(item => {
+                arr.push(item.Name);
+            })
+            defaultCheckedList = plainOptions = arr;
+            this.changeSum();
+
+        } else if (phone_res) {
+            // ----------------------------登录后购物车----------------------------------------
+            // 获取stroage中登录用户的用户名去查找改用户的数据库购物车表
+            let obj = {};
+            let name_list = [];// 用于存合并
+            let store_list = [];// 用于存到仓库的
+            let axios_list = [];// 用于发送请求的
+            let sum = []
+            // 发起请求()
+            let goodsinf = await Api.login_cart(JSON.stringify(phone_res));
+            // console.log('goodsinf', goodsinf);
+            let inf = {};
+            goodsinf.forEach(item => {
+                if (item.phone === phone_res) {
+                    inf = item.cartinf;
+                }
+            })
+            inf.forEach(item => {
+                // 整理Name发送请求
+                obj.Name = item.Name;
+                obj.qty = item.qty;
+                name_list.push(obj);
+                obj = {};
+            })
+            // -------------不存在合并后的sumgoods----------
+            if (!sumgoods) {
+                // 合并用户的购物车表信息与本地浏览存储的商品信息
+                user_res = JSON.parse(user_res);
+                // console.log('stroage的', user_res);
+                if (user_res.length > name_list.length) {
+                    user_res.forEach(uitem => {
+                        name_list.forEach(nitem => {
+                            if (uitem.title === nitem.Name) {
+                                uitem.qty = uitem.qty * 1 + nitem.qty * 1
+                            }
+                        })
+                    })
+                    // 改键名
+                    let obj = {};
+                    user_res.forEach(item => {
+                        obj.Name = item.title;
+                        obj.qty = item.qty;
+                        store_list.push(obj);
+                        obj = {}
+                    })
+                } else {
+                    name_list.forEach(nitem => {
+                        user_res.forEach(uitem => {
+                            if (uitem.title === nitem.Name) {
+                                nitem.qty = uitem.qty * 1 + nitem.qty * 1
+                            }
+                        })
+                    })
+                    store_list = name_list;
+                }
+                // 把整理好的数据存到仓库store
+                this.props.loginCart(store_list);
+                // 把整理好的合并数据存到本地
+                sum = user_res;
+                store_list.forEach(sitem => {
+                    sum.forEach(item => {
+                        if (sitem.Name === item.title) {
+                            item.qty = sitem.qty
+                        }
+                    })
+                })
+                localStorage.setItem("sumgoods", JSON.stringify(sum));
+                // 根据仓库的信息渲染购物车
+                //  处理格式（获取名字，查询数据库）
+                let storeObj = {};
+                this.props.cart[0].forEach(item => {
+                    storeObj.Name = item.Name;
+                    axios_list.push(storeObj);
+                    storeObj = {}
+                })
+                let response = await Api.logout_cart(JSON.stringify(axios_list));
+                dataList = response.data;
+                // 整理Name的qty数量,拼接到请求回来的商品dataList中
+                store_list.forEach(item => {
+                    dataList.map(itemd => {
+                        if (item.Name === itemd.Name) {
+                            itemd.qty = item.qty
+                        }
+                    })
+                })
+                this.setState({
+                    dataList
+                })
+
+            } else {
+                //--------存在sumgoods后-----------
+                // 直接把sumgoods拿出来发请求
+                sumgoods = JSON.parse(sumgoods);
+                let sumObj = {};
+                sumgoods.forEach(item => {
+                    sumObj.Name = item.title;
+                    axios_list.push(sumObj);
+                    sumObj = {};
+                })
+                let response = await Api.logout_cart(JSON.stringify(axios_list));
+                dataList = response.data;
+                sumgoods.forEach(item => {
+                    dataList.map(itemd => {
+                        if (item.title === itemd.Name) {
+                            itemd.qty = item.qty
+                        }
+                    })
+                })
+                this.setState({
+                    dataList
+                })
+
+            }
+            //渲染dataList的Name来实现
+            dataList.map(item => {
+                arr.push(item.Name);
+            })
+            defaultCheckedList = plainOptions = arr;
+            this.changeSum();
+        }
+        let updateList = [];
+        let updateObj = {};
+        sumgoods.forEach(item => {
+            updateObj.Name = item.title;
+            updateObj.qty = item.qty;
+            updateList.push(updateObj);
+            updateObj = {}
+        })
+        let result = await Api.update_cart({
+            phone: phone_res,
+            updateList
+        });
+
+    }
+    //总计
+    changeSum() {
+        let { sumList, dataList } = this.state;
+        let phone_res = localStorage.getItem("phone");
+        // ----------登录前--------------
+        if (!phone_res) {
+            sumList = [];
+            dataList.forEach(item => {
+                defaultCheckedList.forEach(deitem => {
+                    if (item.Name === deitem) {
+                        sumList.push(item)
+                    }
+                })
+            })
+            this.setState({
+                sumList
+            })
+            //总计
+            this.setState({
+                totalPrice: sumList.reduce((prev, item) => prev + item.CurrentPrice * item.qty, 0)
+            })
+
+        } else {
+            // ----------登录后--------------
+            sumList = [];
+            dataList.forEach(item => {
+                defaultCheckedList.forEach(deitem => {
+                    if (item.Name === deitem) {
+                        sumList.push(item)
+                    }
+                })
+            })
+            this.setState({
+                sumList
+            })
+            // console.log("sumList", sumList)
+            // console.log("dataList", this.state.dataList)
+            this.setState({
+                totalPrice: sumList.reduce((prev, item) => prev + item.CurrentPrice * item.qty, 0)
+            })
         }
     }
-    changeSum() {
-        let { sumList, datalist } = this.state;
-        sumList = [];
-        datalist.forEach(item => {
-            defaultCheckedList.forEach(deitem => {
-                if (item.title === deitem) {
-                    sumList.push(item)
+    // 清空购物车
+    clearCart = async () => {
+        let { dataList } = this.state;
+        let phone_res = localStorage.getItem("phone");
+        let newArr = [];
+        let stArr = [];
+        defaultCheckedList.forEach(item => {
+            dataList.filter(itemd => {
+                if (item === itemd.Name) {
+                    newArr.push(itemd)
                 }
             })
         })
+        console.log("newArr", newArr);
+        dataList = newArr;
         this.setState({
-            sumList
+            dataList
         })
-        // console.log('sumList', sumList)
-        // console.log('defaultCheckedList', defaultCheckedList)
-        //总计
-        this.setState({
-            totalPrice: sumList.reduce((prev, item) => prev + item.promotion_price * item.qty, 0)
+        console.log("111111", dataList);
+        let cartArr = [];
+        let obj = {};
+        dataList.forEach(item => {
+            obj.Name = item.Name;
+            obj.qty = item.qty;
+            cartArr.push(obj);
+            obj = {}
         })
+        dataList.forEach(item => {
+            obj.title = item.Name;
+            obj.qty = item.qty;
+            stArr.push(obj);
+            obj = {}
+        })
+        console.log("cartArr", cartArr)
+        // 清除数据库
+        let result = await Api.update_cart({
+            phone: phone_res,
+            updateList: cartArr
+        });
+        // 清除本地stroage
+        localStorage.setItem("sumgoods", JSON.stringify(stArr));
+        localStorage.removeItem('usergoods');
+        console.log('result', result)
     }
-
     render() {
-        let { datalist, totalPrice, checkAll } = this.state;
+        let { dataList, totalPrice, checkAll } = this.state;
         return (
             <div className="cart">
                 <div>
                     {
-                        datalist.map(item => {
-                            return <dl className="goods" key={item.weight}>
+                        dataList.map(item => {
+                            return <dl className="goods" key={item.Name}>
                                 <dt className="goodsItem" >
                                     <Checkbox
-                                        onChange={this.onChange.bind(this, item.title)}
-                                        checked={defaultCheckedList.indexOf(item.title) > -1 ? true : false}
+                                        onChange={this.onChange.bind(this, item.Name)}
+                                        checked={defaultCheckedList.indexOf(item.Name) > -1 ? true : false}
                                     ></Checkbox>
-                                    <img src={item.image} />
+                                    <img src={item.imgurl} />
                                     <p>
-                                        <i className="title">{item.title}</i>
-                                        <em>{item.weight}</em>
+                                        <i className="title">{item.Name}</i>
+                                        <em>{item.LabelText}</em>
                                         <span className="price">
-                                            <b>{item.promotion_price}</b>
-                                            <del>{item.price}</del>
+                                            <b>{item.CurrentPrice}</b>
+                                            <del>{item.CurrentPrice * 1.5}</del>
                                         </span>
                                     </p>
                                     <div className="inputNum">
                                         <InputNumber
                                             min={1}
-                                            max={10}
+                                            max={50}
                                             defaultValue={item.qty}
-                                            onChange={this.changeQty.bind(this, item.title)}
+                                            onChange={this.changeQty.bind(this, item.Name)}
                                         />
                                     </div>
                                 </dt>
@@ -191,13 +409,14 @@ class App extends Component {
                         checked={checkAll}
                     >全选
                     </Checkbox>
-                    <span>清空</span>
+                    <span onClick={this.clearCart}>清空</span>
                     <p className="sum">
                         <span>合计：</span>
                         <b>{totalPrice}</b>
                     </p>
                     <Button type="primary">结算</Button>
                 </div>
+                <Navbar></Navbar>
             </div>
         )
     }

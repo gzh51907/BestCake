@@ -7,21 +7,21 @@ class Recommend extends Component {
     state = {
         datalist: [
             {
-                image: '../../assest/mw_firm_sq.jpg',
-                title: '伴手礼系列-吉致生巧',
-                price: '168.00/1盒',
+                image: 'https://res.bestcake.com/m-images/ww/jd/极地牛乳.png?v=19',
+                title: '极地牛乳',
+                price: '218.00/1盒',
                 qty: 1
             },
             {
-                image: '../../assest/mw_firm_nzt_v1.jpg',
-                title: '伴手礼系列-吉致牛轧糖',
-                price: '68.00/16粒装',
+                image: 'https://res.bestcake.com/m-images/ww/jd/布朗尼精灵.png?v=19',
+                title: '布朗尼精灵',
+                price: '218.00/16粒装',
                 qty: 1
             },
             {
-                image: '../../assest/mw_firm_pf_v1.jpg',
-                title: '伴手礼系列-吉致泡芙',
-                price: '88.00/0.8磅',
+                image: 'https://res.bestcake.com/m-images/ww/jd/白色红丝绒.png?v=19',
+                title: '白色红丝绒',
+                price: '218.00/0.8磅',
                 qty: 1
             },
         ],
@@ -36,15 +36,17 @@ class Recommend extends Component {
         this.setState({
             storageList
         })
-        // console.log('dataList', dataList);
+        // console.log('dataList', datalist);
     }
     addGoods = (inf) => {
+        let { datalist } = this.state;
         let isok = null;
         let arr = [];
         let newArr = [];
         let user_res = localStorage.getItem("usergoods");
+        let sum_res = localStorage.getItem("sumgoods");
         let phone_res = localStorage.getItem("phone");
-        //  未登录前
+        //  ------------------未登录前存到stroage中的usergoods---------------
         if (!phone_res) {
             // 本地已存在商品，判断要添加的商品在本地是否存在
             if (user_res) {
@@ -71,6 +73,19 @@ class Recommend extends Component {
                 arr.push(inf)
                 localStorage.setItem('usergoods', JSON.stringify(arr));
             }
+
+        } else {
+            //----------------登录后存到stroage中的sumgoods---------------
+            sum_res = JSON.parse(sum_res);
+            console.log('inf:', inf.title, 'qty', inf.qty)
+            sum_res.forEach(item => {
+                if (item.title === inf.title) {
+                    item.qty = item.qty * 1 + inf.qty
+                }
+            })
+            localStorage.setItem("sumgoods", JSON.stringify(sum_res));
+            console.log('dataList', datalist);
+            // 更新dataList
 
         }
     }

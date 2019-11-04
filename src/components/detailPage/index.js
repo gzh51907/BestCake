@@ -43,14 +43,19 @@ class Detail extends Component{
     };
 
     buynow = ({iname,goodsnum})=>{
-   
         this.AddToCart({iname,goodsnum});
+        let goods = localStorage.getItem("usergoods");
+        if(goods){
+            let arr2 = JSON.parse(goods);
+            // arr2.map(item=>(item.title===iname)?(item.qty++):arr2.push[{title:iname,qty:goodsnum}])
+        }
         // console.log(JSON.stringify(usergoods,{title:iname,qty:goodsnum}))
-        localStorage.setItem('usergoods',JSON.stringify({title:iname,qty:goodsnum}))
+        localStorage.setItem('usergoods',JSON.stringify(arr2))
         this.setState({
             showha:true
         })
     };
+
     gocart=({iname,goodsnum})=>{
         this.AddToCart({iname,goodsnum});
         if(localStorage.getItem("phone")){
@@ -59,9 +64,10 @@ class Detail extends Component{
             this.props.history.push("/mine") 
         }
     };
+    
     goorder=({iname,goodsnum})=>{
         this.AddToCart({iname,goodsnum});
-        localStorage.setItem('usergoods',JSON.stringify({title:iname,qty:goodsnum}))
+        localStorage.setItem('usergoods',JSON.stringify([{title:iname,qty:goodsnum}]))
         if(localStorage.getItem("phone")){
             this.props.history.push("/order")     
         }else{

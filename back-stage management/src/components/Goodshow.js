@@ -249,9 +249,9 @@ const columns = this.columns.map(col => {
 
 return (
     <div>
-    <Button onClick={this.handleAdd} type="primary" style={{ marginBottom: 16 }}>
+    {/* <Button onClick={this.handleAdd} type="primary" style={{ marginBottom: 16 }}>
         Add a row
-    </Button>
+    </Button> */}
     <Table
         components={components}
         rowClassName={() => 'editable-row'}

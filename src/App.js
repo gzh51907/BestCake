@@ -7,20 +7,22 @@ import Cart from "@/pages/cart/index";
 import List from "@/pages/list";
 import Mine from "@/pages/mine/index";
 import Detail from "@/components/detailPage";
+import Goodsadd from "@/components/addgoods";
 import Order from './pages/order';
 class App extends Component {
     render() {
         return (
             <div>
                 <Switch>
-                    {/* <Route path="/goods" component={Gshow} /> */}
+                    <Route path="/adda" component={Goodsadd} />
                     <Route path="/home" component={Home} />
                     <Route path="/cart" component={Cart} />
                     <Route path="/list" component={List} />
                     <Route path="/mine" component={Mine} />
                     <Route path="/order" component={Order} />
                     <Route path="/detail" component={Detail} />
-                    <Redirect from="/" to="/home" exact />
+                    {/* <Redirect from="/" to="/home" exact /> */}
+                    <Redirect from="/" to="/adda" exact />
                 </Switch>
             </div>
         )

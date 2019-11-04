@@ -64,6 +64,16 @@ export async function login_cart(datas, config = {}) {
     });
     return data;
 }
+// 更新用户的购物车信息表
+export async function update_cart(datas, config = {}) {
+    let { data } = await bsk.get('/update_goods/update', {
+        params: {
+            phone: datas.phone,
+            updateCart: datas.updateList,
+        }
+    });
+    return data;
+}
 
 export default {
     get_homedata,
@@ -73,6 +83,7 @@ export default {
     check_login,
     logout_cart,
     login_cart,
+    update_cart,
     bsk
 };
 // export default bsk;

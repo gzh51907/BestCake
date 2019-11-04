@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Checkbox, InputNumber, Button } from "antd";
+import Navbar from '@/components/navbar';
 import 'antd/dist/antd.css';
 import './Cart.scss';
 import MyContext from '../../context';
@@ -52,7 +53,6 @@ class App extends Component {
     };
     //全选
     onCheckAllChange = e => {
-        let { checkAll } = this.state;
         defaultCheckedList = e.target.checked ? plainOptions : [];
         this.setState({
             checkAll: e.target.checked,
@@ -96,6 +96,7 @@ class App extends Component {
         this.changeSum();
 
     }
+
     async componentDidMount() {
         let { dataList } = this.state;
         let arr = [];
@@ -213,8 +214,6 @@ class App extends Component {
                     storeObj = {}
                 })
                 let response = await Api.logout_cart(JSON.stringify(axios_list));
-                // console.log('axios_list', axios_list);
-                // console.log('response', response);
                 dataList = response.data;
                 // 整理Name的qty数量,拼接到请求回来的商品dataList中
                 store_list.forEach(item => {
@@ -259,8 +258,21 @@ class App extends Component {
             defaultCheckedList = plainOptions = arr;
             this.changeSum();
         }
+        let updateList = [];
+        let updateObj = {};
+        sumgoods.forEach(item => {
+            updateObj.Name = item.title;
+            updateObj.qty = item.qty;
+            updateList.push(updateObj);
+            updateObj = {}
+        })
+        let result = await Api.update_cart({
+            phone: phone_res,
+            updateList
+        });
 
     }
+    //总计
     changeSum() {
         let { sumList, dataList } = this.state;
         let phone_res = localStorage.getItem("phone");
@@ -277,7 +289,6 @@ class App extends Component {
             this.setState({
                 sumList
             })
-            // console.log('sumList', sumList)
             //总计
             this.setState({
                 totalPrice: sumList.reduce((prev, item) => prev + item.CurrentPrice * item.qty, 0)
@@ -285,15 +296,68 @@ class App extends Component {
 
         } else {
             // ----------登录后--------------
-            //获取仓库的数据计算总价
-            console.log("cart", this.props.cart)
-            console.log("dataList", this.state.dataList)
+            sumList = [];
+            dataList.forEach(item => {
+                defaultCheckedList.forEach(deitem => {
+                    if (item.Name === deitem) {
+                        sumList.push(item)
+                    }
+                })
+            })
             this.setState({
-                totalPrice: dataList.reduce((prev, item) => prev + item.CurrentPrice * item.qty, 0)
+                sumList
+            })
+            // console.log("sumList", sumList)
+            // console.log("dataList", this.state.dataList)
+            this.setState({
+                totalPrice: sumList.reduce((prev, item) => prev + item.CurrentPrice * item.qty, 0)
             })
         }
     }
-
+    // 清空购物车
+    clearCart = async () => {
+        let { dataList } = this.state;
+        let phone_res = localStorage.getItem("phone");
+        let newArr = [];
+        let stArr = [];
+        defaultCheckedList.forEach(item => {
+            dataList.filter(itemd => {
+                if (item === itemd.Name) {
+                    newArr.push(itemd)
+                }
+            })
+        })
+        console.log("newArr", newArr);
+        dataList = newArr;
+        this.setState({
+            dataList
+        })
+        console.log("111111", dataList);
+        let cartArr = [];
+        let obj = {};
+        dataList.forEach(item => {
+            obj.Name = item.Name;
+            obj.qty = item.qty;
+            cartArr.push(obj);
+            obj = {}
+        })
+        dataList.forEach(item => {
+            obj.title = item.Name;
+            obj.qty = item.qty;
+            stArr.push(obj);
+            obj = {}
+        })
+        console.log("cartArr", cartArr)
+        // 清除数据库
+        let result = await Api.update_cart({
+            phone: phone_res,
+            updateList: cartArr
+        });
+        // 清除本地stroage
+        localStorage.setItem("sumgoods", JSON.stringify(stArr));
+        localStorage.removeItem('usergoods');
+        console.log('result', result)
+    }
     render() {
         let { dataList, totalPrice, checkAll } = this.state;
         return (
@@ -345,13 +409,14 @@ class App extends Component {
                         checked={checkAll}
                     >全选
                     </Checkbox>
-                    <span>清空</span>
+                    <span onClick={this.clearCart}>清空</span>
                     <p className="sum">
                         <span>合计：</span>
                         <b>{totalPrice}</b>
                     </p>
                     <Button type="primary">结算</Button>
                 </div>
+                <Navbar></Navbar>
             </div>
         )
     }

@@ -12,4 +12,17 @@ router.get('/all',async(req,res)=>{
     res.send(formatData({code:0}))
     }
 })
+//获取某个用户的购物车信息
+router.get('/user',async(req,res)=>{
+  let{
+    phone
+  } = req.query
+  console.log(phone);
+  try{
+      let result = await mongo.find(colName,{phone});
+      res.send(formatData({data:result}))
+  }catch{
+      res.send(formatData({code:0}))
+  }
+})
 module.exports = router;

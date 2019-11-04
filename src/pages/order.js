@@ -11,13 +11,18 @@ const {bsk} = API;
 const mapStateToProps=(state)=>({
     cart:state.Cart
 })
-@connect(mapStateToProps)
+const mapDispatchProps=(dispatch)=>{
+    return{
+        ALL_CART:(cart)=>{dispatch({type:'ALL_CART',payload:cart})},//payload传新的cart
+        dispatch//可自定义action或什么不传获取全部Cart
+    }
+}
+@connect(mapStateToProps,mapDispatchProps)
 @withRouter
 class Order extends Component{
     constructor(){
         super();
         this.handleOpenChange= this.handleOpenChange.bind(this);
-        // this.onChange = this.onChange.bind(this);
         this.maskclick = this.maskclick.bind(this);
         this.addorder=this.addorder.bind(this);
         this.init = this.init.bind(this)
@@ -45,6 +50,18 @@ class Order extends Component{
         document.body.style="background:rgb(247, 247, 247);padding:0;margin:0";
         document.getElementsByClassName('ant-calendar-picker-input ant-input ant-input-sm')[0].style.border = "none";
         document.getElementsByClassName('ant-time-picker-input')[0].style.border = "none";
+        let {data} = await bsk.get('/cart/user',{
+            params:{
+                phone:'89766'
+            }
+        })
+        let cart = data.data[0].cartinf.map(item=>{
+            return {
+                name:item.Name,
+                num:item.qty
+            }
+        })
+        this.props.ALL_CART(cart)//请求回来的数据更新仓库
         this.init()
         store.subscribe(()=>{
             this.init()

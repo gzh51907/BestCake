@@ -1,5 +1,6 @@
 const { MongoClient } = require('mongodb');
 const { mongoname, mongourl } = require('../config.json');
+const Objid = require("mongodb").ObjectID
 //封装连接mongodb函数
 async function connect() {
     let result;
@@ -38,32 +39,43 @@ async function create(colName, data) {
  * cloName   字符串 执行操作的集合（表）名
  * query     对象[{}],传要删除的数据特征，可多个
  */
-async function remove(colName, query) {
-    let {
-        db,
-        client
-    } = await connect();//连接数据库
-    let col = db.collection(colName);//获取集合
-    let result = await col.deleteMany({ $or: query });
-    client.close();//关闭数据库
-    return result;
-}
+async function remove(colName, query) {
+        let {
+            db,
+            client
+        } = await connect();//连接数据库
+        let col = db.collection(colName);//获取集合
+        let result;
+        if(query._id){//根据_id作为条件
+           result = await col.deleteMany({$or:[{_id:Objid(query._id)}]})
+        }else{
+            result = await col.deleteMany({ $or: query });
+        }
+        
+        client.close();//关闭数据库
+        return result;
+    }
 /**
  * 改
  * colName 字符串 执行操作的集合名字
  * query  {},根据要修改的数据特征选中数据对象
  * data    7,修改的内容覆盖选中的对象
 */
-async function update(colName, query, data) {
-    let {
-        db,
-        client
-    } = await connect()//连接数据库
-    let col = db.collection(colName);//获取集合
-    let result = await col.updateMany(query, { $set: data });
-    client.close();
-    return result;
-}
+async function update(colName, query, data) {
+        let {
+            db,
+            client
+        } = await connect()//连接数据库
+        let col = db.collection(colName);//获取集合
+        let result;
+        if(query._id){//根据_id作为条件
+            result = await col.updateMany({_id:Objid(query._id)}, { $set: data })
+         }else{
+            result = await col.updateMany(query, { $set: data });
+         }
+        client.close();
+        return result;
+    }
 /**
  * 查
  * colName   字符串  执行操作的集合名字

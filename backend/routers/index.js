@@ -3,7 +3,7 @@ const router = express.Router();
 
 router.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length,Authorization,Accept,X-Requested-Width");
+    res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length,Authorization,Accept,x-requested-with");
     res.header("Access-Control-Allow-Methods", "PUT,PATCH,POST,GET,DELETE,OPTIONS");
     if (req.method == "OPTIONS") {
         res.sendStatus(200);
@@ -20,6 +20,7 @@ const regrouter = require('./reg');//引入homerouter路由
 const createrouter = require('./create_inf');//引入homerouter路由
 const logoutrouter = require('./logout_goods');//引入homerouter路由
 const adlogrouter = require('./adlog');//引入管理员路由
+const usersrouter = require('./user_inf');//引入管理员路由
 router.use(express.urlencoded({//处理静态资源
     extended: true
 }), express.json())
@@ -32,4 +33,5 @@ router.use('/order', orderrouter);//使用订单路由
 router.use('/create_inf', createrouter);//使用订单路由
 router.use('/logout_goods', logoutrouter);//使用订单路由
 router.use('/ad', adlogrouter);//使用管理员信息查询路由
+router.use('/user_inf', usersrouter);//使用管理员信息查询路由
 module.exports = router;//导出路由

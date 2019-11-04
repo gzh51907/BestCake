@@ -1,15 +1,16 @@
 import React, { Component } from "react";
 import { Icon, Divider, Drawer, Button, Form, Input, message } from "antd";
+import Navbar from '../../components/navbar';
 import '../../pages/Mine/Mine.scss';
 import 'antd/dist/antd.css';
 import Api from '../../api';
 import { connect } from 'react-redux';
-const mapStateToProps = (data) => ({
-    acount: data.acount,
-    data: data
-})
-// console.log();
-@connect(mapStateToProps)
+// const mapStateToProps = (data) => ({
+//     acount: data.acount,
+//     data: data
+// })
+// // console.log();
+// @connect(mapStateToProps)
 class Mine extends Component {
     constructor(props) {
         super(props);
@@ -24,6 +25,7 @@ class Mine extends Component {
             logPhone: '',
             logPass: '',
             regSwitch: false,
+            acount: '',
             menu: [
                 {
                     con: '会员等级',
@@ -50,34 +52,28 @@ class Mine extends Component {
     }
 
     componentDidMount() {
-        let { acount } = this.props;
         // 如果已登录显示我的
+        let { acount } = this.state;
         let local = localStorage.getItem('phone');
         if (local) {
+            let head = local.substring(0, 3);
+            let foot = local.substring(7);
+            local = `${head}****${foot}`;
             acount = local;
-            let head = acount.substring(0, 3);
-            let foot = acount.substring(7);
-            acount = `${head}****${foot}`;
             this.setState({
                 visible: false,
-                // phone
+                acount
             });
         } else {
             this.setState({
                 visible: true,
             });
         }
-        // console.log('local', local);
         this.randomCode();
-
-        // console.log('props:', this.props);
-        // console.log('acount:', acount);
     }
 
     goto = (path) => {
         let { history } = this.props;
-        // console.log(this.props);
-        // console.log(path);
         history.push('/mine' + path);
     }
     // 登录框---------------------
@@ -89,7 +85,6 @@ class Mine extends Component {
 
     onClose = () => {
         let local = localStorage.getItem('phone');
-        // console.log('local', local);
         if (local) {
             this.setState({
                 visible: false,
@@ -212,12 +207,10 @@ class Mine extends Component {
     // 登录验证
     checkLog = async () => {
         let { logPhone, logPass } = this.state;
-        // console.log(logPhone, logPass)
         let res = await Api.check_login({
             logPhone,
             logPass
         })
-        // console.log('checklog', res);
         if (res.code === 0) {
             let msg = "账号或密码错误！";
             this.error(msg);
@@ -228,8 +221,7 @@ class Mine extends Component {
     }
 
     render() {
-        let { menu, isok, random, show, regPhone, regCode, logPhone, logPass } = this.state;
-        let { acount } = this.props;
+        let { menu, isok, random, show, acount } = this.state;
         return (
             <div className="mine">
                 <header>
@@ -327,6 +319,7 @@ class Mine extends Component {
 
                     </Drawer>
                 </div>
+                <Navbar></Navbar>
             </div>
         )
     }

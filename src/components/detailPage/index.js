@@ -45,12 +45,14 @@ class Detail extends Component{
     buynow = ({iname,goodsnum})=>{
         this.AddToCart({iname,goodsnum});
         let goods = localStorage.getItem("usergoods");
+
         if(goods){
             let arr2 = JSON.parse(goods);
+            console.log(arr2)
             // arr2.map(item=>(item.title===iname)?(item.qty++):arr2.push[{title:iname,qty:goodsnum}])
         }
         // console.log(JSON.stringify(usergoods,{title:iname,qty:goodsnum}))
-        localStorage.setItem('usergoods',JSON.stringify(arr2))
+        localStorage.setItem('usergoods',JSON.stringify({arr2}))
         this.setState({
             showha:true
         })
@@ -84,7 +86,7 @@ class Detail extends Component{
     async componentDidMount(){
         let name = this.props.location.query;
         let {data} = await Api.get_detaildata(name);
-        console.log(data)
+        // console.log(data)
             this.setState({
                 detaildata:data[0],
                 iname:data[0].Name,
@@ -114,12 +116,12 @@ class Detail extends Component{
                 })
             }
 
-            console.log(this.state.piclist)
+            // console.log(this.state.piclist)
     }
 
     render(){
         let {piclist,detaildata,Size,goodsnum,CurrentPrice,showha,iname} = this.state;
-        console.log(detaildata)
+        // console.log(detaildata)
             if(detaildata){
                 return(
                     <Layout className="detail_wrap_box"

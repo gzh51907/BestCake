@@ -33,7 +33,7 @@ router.get('/delete',(req,res)=>{
         ID
     }=req.query;
 
-    console.log(ID)
+    // console.log(ID)
     try{
         // mongo.remove(colName,[{'ID':752}]);
         mongo.remove(colName,{_id:ID});
@@ -49,7 +49,7 @@ router.get('/update',async (req,res)=>{
         ID,//
         updatedata,//修改的信息 对象
     }=req.query;
-    console.log(req.query)
+    // console.log(req.query)
     updatedata= JSON.parse(updatedata);
     // console.log(updatedata)
     try{

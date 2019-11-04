@@ -26,7 +26,7 @@ const props = {
         onChange(info) {
         const { status } = info.file;
         if (status !== 'uploading') {
-            console.log(info.file, info.fileList[0].response);
+            // console.log(info.file, info.fileList[0].response);
             img = info.fileList[0].response;
 
         }
@@ -80,13 +80,13 @@ class Goodsadd extends Component{
 
         async handleSubmit(e){
             e.preventDefault();
-            console.log(this.inputDOM);
+            // console.log(this.inputDOM);
             let ID = this.props.form.getFieldValue('ID');
             let Name = this.props.form.getFieldValue('Name');
             let CurrentPrice = this.props.form.getFieldValue('CurrentPrice');
             let datas ={ID:ID,Name:Name,CurrentPrice:CurrentPrice,Size:gsize,imgurl:img};
             let data= await Api.add_goods(datas);
-            console.log(datas)
+            // console.log(datas)
             if(data.code ===1){
                 alert("successfully!")
                 this.props.form.resetFields(); 
@@ -96,7 +96,7 @@ class Goodsadd extends Component{
 
         getChange = e=>{
             gsize = e[0]
-            console.log(gsize)
+            // console.log(gsize)
         }
     render(){
     const { formLayout ,imageUrl} = this.state;

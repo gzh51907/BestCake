@@ -27,7 +27,7 @@ class Navbar extends Component {
     render() {
         let { history } = this.props
         let { navlist, selected, cartlength } = this.props.data;
-        console.log(111)
+        // console.log(111)
         // console.log(navlist);
         return (
             <div style={{ height: 80, lineHeight: 80 }}>

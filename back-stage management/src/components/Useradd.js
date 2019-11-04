@@ -14,7 +14,7 @@ class Useradd extends Component{
 
     async handleSubmit(e){
         e.preventDefault();
-        console.log(e);
+        // console.log(e);
         let phone = this.props.form.getFieldValue('phone');
         let password = this.props.form.getFieldValue('password');
         let datas ={phone:phone,password:password};

@@ -35,7 +35,7 @@ router.get('/delete',(req,res)=>{
         ID
     }=req.query;
 
-    console.log(ID)
+    // console.log(ID)
     try{
         // mongo.remove(colName,[{'ID':752}]);
         mongo.remove(colName,[{'Name':ID}]);

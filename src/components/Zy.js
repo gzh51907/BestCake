@@ -59,15 +59,59 @@ class Zy extends Component{
              query:name
          })
       }
-      AddToCart=({name,num})=>{
+      AddToCart=({name,num},event)=>{
+          event.stopPropagation();
           let props =this.props;
           let isok = false;
           let cart =props.cart
-          cart.forEach(i=>{//如果购物车已存在就增加数量
-              if(i.name==name){ isok=true}
+          let index;
+          cart.forEach((i,idx)=>{//如果仓库购物车已存在就增加数量
+              if(i.name==name){ isok=true,index=idx}
           })
-          if(isok){props.CHANGE_QTY({name,num})}
-          else{props.ADD_TO_CART({name,num})}
+          if(isok){//如果仓库购物车已存在就增加数量
+            props.CHANGE_QTY({name,num})//改变仓库购物车
+         }
+         else{props.ADD_TO_CART({name,num})}
+          if(localStorage.getItem('phone')){//有登陆，就更新数据库
+            let cartinf = props.cart.map((item,idx)=>{//处理传给数据库的数据格式
+                if(isok){//已存在商品
+                    if(idx==index){//找到存在的商品加1
+                        return{
+                            Name:item.name,
+                            qty:item.num+1
+                        }
+                    }else{
+                        return {
+                            Name:item.name,
+                            qty:item.num
+                        }
+                    }
+                }else{//不存在该商品，直接返回
+                    return {
+                        Name:item.name,
+                        qty:item.num
+                    }
+                }
+            })
+            if(!isok){//如果不存在
+            cartinf.push({Name:name,qty:num})
+            }
+            bsk.get('/cart/update',{//更新数据库的用户购物车
+                params:{
+                    phone:localStorage.getItem('phone'),
+                    cartinf:JSON.stringify(cartinf)
+                }
+            })
+          }else{//没登录就更新浏览器的storage
+             let loaclcart = localStorage.getItem('usergoods');
+             loaclcart.forEach((i,idx)=>{
+                 if(i.title==name){//浏览器缓存已存在该商品，就增加数量
+                    loaclcart[idx].qty=loaclcart[idx].qty+1;
+                 }else{//没有改商品就添加
+                     loaclcart.push({title:name,qty:num})
+                 }
+             })
+          }
       }
     render(){
         let{datalist,current} = this.state
@@ -97,7 +141,7 @@ class Zy extends Component{
                             <span style={{fontSize:'4.267vw',color:'rgb(255, 51, 0)'}}>{item.CurrentPrice}</span>
                             <span style={{fontSize:'3.2vw',color:'rgb(153, 153, 153)',marginLeft:'1.067vw'}}>/{item.Size}</span>
                             <Icon 
-                            style={{width:'5.334vw', fontSize:'5.334vw',color:'#00CCCC',float:'right',marginRight:'2vw'}} 
+                            style={{float:'right', width:'5.334vw', fontSize:'5.334vw',color:'#00CCCC',marginRight:'2vw'}} 
                             type="shopping-cart"
                             onClick={this.AddToCart.bind(this,{name:item.Name,num:1})}
                              />

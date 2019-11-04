@@ -50,12 +50,18 @@ class Order extends Component{
         document.body.style="background:rgb(247, 247, 247);padding:0;margin:0";
         document.getElementsByClassName('ant-calendar-picker-input ant-input ant-input-sm')[0].style.border = "none";
         document.getElementsByClassName('ant-time-picker-input')[0].style.border = "none";
+
         let {data} = await bsk.get('/cart/user',{
             params:{
-                phone:'89766'
+                phone:localStorage.getItem('phone')
             }
         })
-        let cart = data.data[0].cartinf.map(item=>{
+        try{//若请求回来的为字符串，就尝试转换
+            data.data[0].cartinf = JSON.parse(data.data[0].cartinf)
+        }catch{
+            
+        }
+            let cart = data.data[0].cartinf.map(item=>{
             return {
                 name:item.Name,
                 num:item.qty

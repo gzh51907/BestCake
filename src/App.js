@@ -20,7 +20,6 @@ class App extends Component {
                     <Route path="/detail" component={Detail} />
                     <Redirect from="/" to="/home" exact />
                 </Switch>
-                <Navbar></Navbar>
             </div>
         )
     }

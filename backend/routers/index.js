@@ -20,6 +20,7 @@ const regrouter = require('./reg');//引入homerouter路由
 const createrouter = require('./create_inf');//引入homerouter路由
 const logoutrouter = require('./logout_goods');//引入homerouter路由
 const adlogrouter = require('./adlog');//引入管理员路由
+const usergoods = require('./usergoods');//引入用户购物车信息路由
 router.use(express.urlencoded({//处理静态资源
     extended: true
 }), express.json())
@@ -32,4 +33,5 @@ router.use('/order', orderrouter);//使用订单路由
 router.use('/create_inf', createrouter);//使用订单路由
 router.use('/logout_goods', logoutrouter);//使用订单路由
 router.use('/ad', adlogrouter);//使用管理员信息查询路由
+router.use('/cart',usergoods);//使用用户购物车路由
 module.exports = router;//导出路由

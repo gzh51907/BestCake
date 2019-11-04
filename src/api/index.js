@@ -54,6 +54,15 @@ export async function logout_cart(datas, config = {}) {
     });
     return data;
 }
+// 登录后查找改用户的购物车信息表
+export async function login_cart(datas, config = {}) {
+    let { data } = await bsk.get('/login_goods/cart', {
+        params: {
+            user_phone: datas,
+        }
+    });
+    return data;
+}
 
 export default {
     get_homedata,
@@ -62,6 +71,7 @@ export default {
     create_inf,
     check_login,
     logout_cart,
+    login_cart,
     bsk
 };
 // export default bsk;

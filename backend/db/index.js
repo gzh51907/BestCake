@@ -52,7 +52,7 @@ async function remove(colName, query) {
  * 改
  * colName 字符串 执行操作的集合名字
  * query  {},根据要修改的数据特征选中数据对象
- * data   {},修改的内容覆盖选中的对象
+ * data    7,修改的内容覆盖选中的对象
 */
 async function update(colName, query, data) {
     let {
@@ -78,15 +78,14 @@ async function find(colName, query = {}, page, sk) {
     } = await connect();//连接数据库
     let result;
     let col = db.collection(colName);//获取集合
-    if (page) {//如果传页数，就一定要传sk数量获取部分数据
-        page = page - 1;
-        if (Array.isArray(query)) { result = await col.find({ $or: query }).skip(sk * page - 0).limit(sk).toArray() }
-        else { result = await col.find(query).skip(sk * page - 0).limit(sk).toArray() }
-
-    } else {//否则返回全部符合query特征的数据
-        if (Array.isArray(query)) { result = await col.find({ $or: query }).toArray(); }
-        else { result = await col.find(query).toArray(); console.log('check_log:', result) }
-
+    if(page){//如果传页数，就一定要传sk数量获取部分数据
+        page=page-1;
+        if(Array.isArray(query)){result = await col.find({$or:query}).skip(sk*page-0).limit(sk-0).toArray()}
+        else{result = await col.find(query).skip(sk*page-0).limit(sk-0).toArray();}
+        
+    }else{//否则返回全部符合query特征的数据
+        if(Array.isArray(query)){result = await col.find({$or:query}).toArray();}
+        else{result = await col.find(query).toArray();}
     }
     client.close()//关闭数据库
     return result;

@@ -133,16 +133,22 @@ class App extends Component{
                  </div>
               </Sider>
             <Layout>
-              <Header style={{ background: '#66ccff', padding: 0 ,display:'flex',alignItems:'center'}}>
+              <Header style={{height:"7vh" ,background: '#66ccff', padding: 0 ,display:'flex',alignItems:'center'}}>
                 <Icon
                   className="trigger"
-                  style={{fontSize:'2vw',marginLeft:'2vw',color:'#fff',lineHeight:'64px'}}
+                  style={{height:"100%",fontSize:'1.5vw',marginLeft:'2vw',color:'#fff',lineHeight:'7vh'}}
                   type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
                   onClick={this.toggle}
                 />
                   <PageHeader
                     style={{
+                      marginLeft:'2vw',
+                      height:'100%',
+                      display:'flex',
                     lineHeight:'100%',
+                    alignItems:'center',
+                    justifyContent:'center',
+                    padding:'0',
                     flex:'1',
                     fontSize:'2vw'
                     }}
@@ -159,6 +165,8 @@ class App extends Component{
                 style={{
                   background: '#fff',
                   minHeight: 280,
+                  height:'93vh',
+                  overflow:'auto'
                 }}
               >
                  {

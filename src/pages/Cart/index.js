@@ -149,7 +149,7 @@ class App extends Component {
             // 发起请求()
             let goodsinf = await Api.login_cart(JSON.stringify(phone_res));
             // console.log('goodsinf', goodsinf);
-            let inf = {};
+            let inf = [];
             goodsinf.forEach(item => {
                 if (item.phone === phone_res) {
                     inf = item.cartinf;
@@ -162,7 +162,7 @@ class App extends Component {
                 name_list.push(obj);
                 obj = {};
             })
-            // -------------不存在合并后的sumgoods----------
+            // -------------不存在sumgoods----------
             if (!sumgoods) {
                 // 合并用户的购物车表信息与本地浏览存储的商品信息
                 user_res = JSON.parse(user_res);
@@ -183,6 +183,16 @@ class App extends Component {
                         store_list.push(obj);
                         obj = {}
                     })
+                    // 把整理好的合并数据存到本地
+                    sum = user_res;
+                    store_list.forEach(sitem => {
+                        sum.forEach(item => {
+                            if (sitem.Name === item.title) {
+                                item.qty = sitem.qty
+                            }
+                        })
+                    })
+                    localStorage.setItem("sumgoods", JSON.stringify(sum));
                 } else {
                     name_list.forEach(nitem => {
                         user_res.forEach(uitem => {
@@ -192,20 +202,19 @@ class App extends Component {
                         })
                     })
                     store_list = name_list;
+                    // 把整理好的合并数据存到本地
+                    let arr = [];
+                    let obj = {};
+                    store_list.forEach(item => {
+                        obj.title = item.Name;
+                        obj.qty = item.qty;
+                        arr.push(obj);
+                        obj = {};
+                    })
+                    localStorage.setItem("sumgoods", JSON.stringify(arr));
                 }
                 // 把整理好的数据存到仓库store
                 this.props.loginCart(store_list);
-                // 把整理好的合并数据存到本地
-                sum = user_res;
-                store_list.forEach(sitem => {
-                    sum.forEach(item => {
-                        if (sitem.Name === item.title) {
-                            item.qty = sitem.qty
-                        }
-                    })
-                })
-                localStorage.setItem("sumgoods", JSON.stringify(sum));
-                // 根据仓库的信息渲染购物车
                 //  处理格式（获取名字，查询数据库）
                 let storeObj = {};
                 this.props.cart[0].forEach(item => {
@@ -257,19 +266,30 @@ class App extends Component {
             })
             defaultCheckedList = plainOptions = arr;
             this.changeSum();
+            let updateList = [];
+            let updateObj = {};
+            sumgoods.forEach(item => {
+                updateObj.Name = item.title;
+                updateObj.qty = item.qty;
+                updateList.push(updateObj);
+                updateObj = {}
+            })
+            // 判断该用户是否有购物车信息表
+            let isIn = await Api.find_user_cart(phone_res);
+            if (isIn.data.length === 0) {
+                //不存在
+                let result = await Api.create_cart({
+                    phone: phone_res,
+                    updateList
+                });
+            } else {
+                let result = await Api.update_cart({
+                    phone: phone_res,
+                    updateList
+                });
+            }
+            // console.log("isIN", isIn);
         }
-        let updateList = [];
-        let updateObj = {};
-        sumgoods.forEach(item => {
-            updateObj.Name = item.title;
-            updateObj.qty = item.qty;
-            updateList.push(updateObj);
-            updateObj = {}
-        })
-        let result = await Api.update_cart({
-            phone: phone_res,
-            updateList
-        });
 
     }
     //总计
@@ -307,8 +327,6 @@ class App extends Component {
             this.setState({
                 sumList
             })
-            // console.log("sumList", sumList)
-            // console.log("dataList", this.state.dataList)
             this.setState({
                 totalPrice: sumList.reduce((prev, item) => prev + item.CurrentPrice * item.qty, 0)
             })
@@ -357,6 +375,11 @@ class App extends Component {
         localStorage.setItem("sumgoods", JSON.stringify(stArr));
         localStorage.removeItem('usergoods');
         console.log('result', result)
+    }
+    // 点击结算跳转到order
+    goto = () => {
+        let { history } = this.props;
+        history.push('/order');
     }
     render() {
         let { dataList, totalPrice, checkAll } = this.state;
@@ -414,7 +437,7 @@ class App extends Component {
                         <span>合计：</span>
                         <b>{totalPrice}</b>
                     </p>
-                    <Button type="primary">结算</Button>
+                    <Button type="primary" onClick={this.goto}>结算</Button>
                 </div>
                 <Navbar></Navbar>
             </div>

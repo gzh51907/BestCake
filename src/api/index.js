@@ -74,6 +74,25 @@ export async function update_cart(datas, config = {}) {
     });
     return data;
 }
+// 查找用户是否已存在购物车表
+export async function find_user_cart(datas, config = {}) {
+    let { data } = await bsk.get('/update_goods/find', {
+        params: {
+            phone: datas
+        }
+    });
+    return data;
+}
+// 创建该用户购物车表
+export async function create_cart(datas, config = {}) {
+    let { data } = await bsk.get('/update_goods/create', {
+        params: {
+            phone: datas.phone,
+            updateCart: datas.updateList,
+        }
+    });
+    return data;
+}
 
 export default {
     get_homedata,
@@ -84,6 +103,8 @@ export default {
     logout_cart,
     login_cart,
     update_cart,
+    find_user_cart,
+    create_cart,
     bsk
 };
 // export default bsk;

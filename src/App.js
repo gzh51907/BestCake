@@ -12,6 +12,7 @@ class App extends Component {
         return (
             <div>
                 <Switch>
+                    {/* <Route path="/goods" component={Gshow} /> */}
                     <Route path="/home" component={Home} />
                     <Route path="/cart" component={Cart} />
                     <Route path="/list" component={List} />
@@ -25,5 +26,4 @@ class App extends Component {
     }
 }
 App = withRouter(App)
-
 export default App;

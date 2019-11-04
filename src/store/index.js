@@ -1,15 +1,6 @@
 import { createStore } from "redux";
 let State = {
-    Cart: [
-        {
-            name: '一见倾心',
-            num: 3
-        },
-        {
-            name: '白色红丝绒',
-            num: 2
-        }
-    ],
+    Cart: [],
     acount: '12345678912'
 }
 function reducer(state = State, { type, payload }) {

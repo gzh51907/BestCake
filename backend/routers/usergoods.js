@@ -30,8 +30,6 @@ router.get('/update',async(req,res)=>{
     phone,
     cartinf
   }=req.query
-  console.log(11)
-  console.log(cartinf)
   try{
       let result = await mongo.update(colName,{phone},{cartinf})
       res.send(formatData())

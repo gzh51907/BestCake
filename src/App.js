@@ -19,7 +19,6 @@ class App extends Component {
                     <Route path="/order" component={Order} />
                     <Route path="/detail" component={Detail} />
                     <Redirect from="/" to="/home" exact />
-
                 </Switch>
             </div>
         )

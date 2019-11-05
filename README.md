@@ -8,7 +8,7 @@
 #### 项目演示:
 
 - 贝思克烘焙官网：<http://m.bestcake.com/>
-- 上线地址：
+- 上线地址：<http://47.98.245.185:20085/home>  后台：<http://47.98.245.185:30006>
 - git仓库地址 ：https://github.com/gzh51907/BestCake.git
 
 #### 团队与分工

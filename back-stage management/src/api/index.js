@@ -1,6 +1,6 @@
 import axios from 'axios';
 let bsk = axios.create({
-    baseURL:'http://localhost:20124'
+    baseURL:'http://47.98.245.185:20124'
 });
 
 

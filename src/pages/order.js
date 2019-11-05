@@ -77,7 +77,6 @@ class Order extends Component{
     init=async ()=>{//初始化
         let total=0;
         let {cart} = this.props;
-        console.log(cart)
         let arr = cart.map(item=>{
             return {'Name':item.name}
         })
@@ -129,7 +128,7 @@ class Order extends Component{
          TJ.style.bottom="0";
     }
      maskclick=()=>{
-        document.body.removeEventListener('touchmove',this.bodyscrool,{ passive: false });
+        document.body.removeEventListener('touchmove',this.bodyscrool,{ passive: false });//解除禁止
         document.getElementsByClassName('outer-mask')[0].style.display = 'none';
         let TJ = document.getElementById('TJ')
          TJ.style.bottom='-100%';
@@ -286,7 +285,7 @@ class Order extends Component{
                  <span>￥{total}</span>
                  <button onClick={this.addorder} className='submitbtn'>提交订单</button>
                  </footer>
-             <TJ item={tj} changetotal={this.changetotal} ></TJ>
+             <TJ item={tj} closeTj={this.maskclick} changetotal={this.changetotal} ></TJ>
              <BZ></BZ>
              <Adress getsdress={this.adressinf}></Adress>
         </div>)

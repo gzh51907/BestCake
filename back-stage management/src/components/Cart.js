@@ -20,9 +20,9 @@ class Cart extends Component{
               title: '购物车信息',
               key: 'cartinf',
               dataIndex: 'cartinf',
-              render: cartsinf => (
+              render: cartinf => (
                 <span>
-                  {cartsinf.map((item,idx) => {
+                  {cartinf.map((item,idx) => {
                       let color = idx%2==0?'geekblue':'green'
                     return (
                       <Tag style={{width:'10vw',padding:'0',overflow:'hidden',textOverflow:'ellipsis'}} color={color} key={idx}>
@@ -39,11 +39,17 @@ class Cart extends Component{
 }
     async componentDidMount(){
        let {data} = await bsk.get('/cart/all')
+       console.log(data)
        let cartlist =data.data.map((item,idx)=>{
+        try{
+           item.cartinf = JSON.parse(item.cartinf)
+        }catch{
+
+        }
            return({
                key:idx,
                phone:item.phone,
-               cartinf:item.cartinf,
+               cartinf:item.cartinf ,
                _id:item._id
            })
        })

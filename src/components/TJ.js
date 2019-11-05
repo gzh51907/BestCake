@@ -34,9 +34,7 @@ class TJ extends Component{
     this.props.changetotal(value1*3+value2*5);
   }
   closeTj=()=>{
-    document.getElementsByClassName('outer-mask')[0].style.display = 'none';
-    let TJ = document.getElementById('TJ')
-     TJ.style.bottom='-100%';
+    this.props.closeTj()
   }
     render(){
         let item = this.state.data[this.props.item?this.props.item:0]

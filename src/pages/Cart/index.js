@@ -65,7 +65,6 @@ class App extends Component {
         let newGoods = [];
         let obj = {};
         let { dataList } = this.state;
-        // console.log('data:', dataList);
         if (!phone_res) {
             dataList.forEach(item => {
                 if (item.Name === name) {
@@ -76,7 +75,6 @@ class App extends Component {
                 newGoods.push(obj)
                 obj = {}
             })
-            // console.log('newGoods', JSON.stringify(newGoods));
             localStorage.setItem("usergoods", JSON.stringify(newGoods));
         } else {
             dataList.forEach(item => {
@@ -103,13 +101,10 @@ class App extends Component {
             updateList.push(updateObj);
             updateObj = {}
         })
-        // console.log("dataList",dataList);
-        // console.log("updateList",updateList);
         let result = await Api.update_cart({
             phone: phone_res,
             updateList
         });
-        console.log(result);
     }
 
     async componentDidMount() {
@@ -132,11 +127,9 @@ class App extends Component {
             })
             // 把本地storage的商品信息请求回来
             let response = await Api.logout_cart(JSON.stringify(til_list));
-            // console.log('req', response);
             dataList = response.data;
             // 整理Name的qty数量,拼接到请求回来的商品dataList中
             res.forEach(item => {
-                // console.log('qty', item.qty);
                 dataList.map(itemd => {
                     if (item.title === itemd.Name) {
                         itemd.qty = item.qty
@@ -163,123 +156,188 @@ class App extends Component {
             let sum = []
             // 发起请求()
             let goodsinf = await Api.login_cart(JSON.stringify(phone_res));
-            // console.log('goodsinf', goodsinf);
             let inf = null;
-            console.log("goodsinf", goodsinf)
             goodsinf.forEach(item => {
                 if (item.phone === phone_res) {
                     inf = item.cartinf;
                 }
             })
-            console.log("inf", inf)
-            if (inf.length <= 1) {
-                inf = JSON.parse(inf);
-            }
-            inf.forEach(item => {
-                // 整理Name发送请求
-                obj.Name = item.Name;
-                obj.qty = item.qty;
-                name_list.push(obj);
-                obj = {};
-            })
-            // -------------不存在sumgoods----------
-            if (!sumgoods) {
-                // 合并用户的购物车表信息与本地浏览存储的商品信息
+            // 判断该用户是否有购物车信息表
+            let isIn = await Api.find_user_cart(phone_res);
+            // 该用户不存在购物车页
+            if (isIn.data.length === 0) {
                 user_res = JSON.parse(user_res);
-                // console.log('stroage的', user_res);
-                if (user_res.length > name_list.length) {
-                    user_res.forEach(uitem => {
-                        name_list.forEach(nitem => {
-                            if (uitem.title === nitem.Name) {
-                                uitem.qty = uitem.qty * 1 + nitem.qty * 1
-                            }
-                        })
+                user_res.forEach(item => {
+                    // 整理Name发送请求
+                    obj.Name = item.Name;
+                    obj.qty = item.qty;
+                    name_list.push(obj);
+                    obj = {};
+                })
+
+                // -------------不存在sumgoods----------
+                if (!sumgoods) {
+                    store_list = user_res;
+                    localStorage.setItem("sumgoods", JSON.stringify(store_list));
+                    // 把整理好的数据存到仓库store
+                    this.props.loginCart(store_list);
+                    //  处理格式（获取名字，查询数据库）
+                    let storeObj = {};
+                    this.props.cart[0].forEach(item => {
+                        storeObj.Name = item.Name;
+                        axios_list.push(storeObj);
+                        storeObj = {}
                     })
-                    // 改键名
-                    let obj = {};
-                    user_res.forEach(item => {
-                        obj.Name = item.title;
-                        obj.qty = item.qty;
-                        store_list.push(obj);
-                        obj = {}
-                    })
-                    // 把整理好的合并数据存到本地
-                    sum = user_res;
-                    store_list.forEach(sitem => {
-                        sum.forEach(item => {
-                            if (sitem.Name === item.title) {
-                                item.qty = sitem.qty
-                            }
-                        })
-                    })
-                    localStorage.setItem("sumgoods", JSON.stringify(sum));
-                } else {
-                    name_list.forEach(nitem => {
-                        user_res.forEach(uitem => {
-                            if (uitem.title === nitem.Name) {
-                                nitem.qty = uitem.qty * 1 + nitem.qty * 1
-                            }
-                        })
-                    })
-                    store_list = name_list;
-                    // 把整理好的合并数据存到本地
-                    let arr = [];
-                    let obj = {};
+                    let response = await Api.logout_cart(JSON.stringify(axios_list));
+                    dataList = response.data;
+                    // 整理Name的qty数量,拼接到请求回来的商品dataList中
                     store_list.forEach(item => {
-                        obj.title = item.Name;
-                        obj.qty = item.qty;
-                        arr.push(obj);
-                        obj = {};
+                        dataList.map(itemd => {
+                            if (item.Name === itemd.Name) {
+                                itemd.qty = item.qty
+                            }
+                        })
                     })
-                    localStorage.setItem("sumgoods", JSON.stringify(arr));
+                    this.setState({
+                        dataList
+                    })
+
+                } else {
+                    //--------存在sumgoods后-----------
+                    // 直接把sumgoods拿出来发请求
+                    sumgoods = JSON.parse(sumgoods);
+                    let sumObj = {};
+                    sumgoods.forEach(item => {
+                        sumObj.Name = item.title;
+                        axios_list.push(sumObj);
+                        sumObj = {};
+                    })
+                    let response = await Api.logout_cart(JSON.stringify(axios_list));
+                    dataList = response.data;
+                    sumgoods.forEach(item => {
+                        dataList.map(itemd => {
+                            if (item.title === itemd.Name) {
+                                itemd.qty = item.qty
+                            }
+                        })
+                    })
+                    this.setState({
+                        dataList
+                    })
+
                 }
-                // 把整理好的数据存到仓库store
-                this.props.loginCart(store_list);
-                //  处理格式（获取名字，查询数据库）
-                let storeObj = {};
-                this.props.cart[0].forEach(item => {
-                    storeObj.Name = item.Name;
-                    axios_list.push(storeObj);
-                    storeObj = {}
-                })
-                let response = await Api.logout_cart(JSON.stringify(axios_list));
-                dataList = response.data;
-                // 整理Name的qty数量,拼接到请求回来的商品dataList中
-                store_list.forEach(item => {
-                    dataList.map(itemd => {
-                        if (item.Name === itemd.Name) {
-                            itemd.qty = item.qty
-                        }
-                    })
-                })
-                this.setState({
-                    dataList
-                })
-
             } else {
-                //--------存在sumgoods后-----------
-                // 直接把sumgoods拿出来发请求
-                sumgoods = JSON.parse(sumgoods);
-                let sumObj = {};
-                sumgoods.forEach(item => {
-                    sumObj.Name = item.title;
-                    axios_list.push(sumObj);
-                    sumObj = {};
-                })
-                let response = await Api.logout_cart(JSON.stringify(axios_list));
-                dataList = response.data;
-                sumgoods.forEach(item => {
-                    dataList.map(itemd => {
-                        if (item.title === itemd.Name) {
-                            itemd.qty = item.qty
-                        }
-                    })
-                })
-                this.setState({
-                    dataList
+                // 该用户已存在购物车页    
+                if (typeof (inf) === "string") {
+                    inf = JSON.parse(inf);
+                }
+                inf.forEach(item => {
+                    // 整理Name发送请求
+                    obj.Name = item.Name;
+                    obj.qty = item.qty;
+                    name_list.push(obj);
+                    obj = {};
                 })
 
+                // -----------------------不存在sumgoods--------------------
+                if (!sumgoods) {
+                    // 合并用户的购物车表信息与本地浏览存储的商品信息
+                    user_res = JSON.parse(user_res);
+                    if (user_res.length > name_list.length) {
+                        user_res.forEach(uitem => {
+                            name_list.forEach(nitem => {
+                                if (uitem.title === nitem.Name) {
+                                    uitem.qty = uitem.qty * 1 + nitem.qty * 1
+                                }
+                            })
+                        })
+                        // 改键名
+                        let obj = {};
+                        user_res.forEach(item => {
+                            obj.Name = item.title;
+                            obj.qty = item.qty;
+                            store_list.push(obj);
+                            obj = {}
+                        })
+                        // 把整理好的合并数据存到本地
+                        sum = user_res;
+                        store_list.forEach(sitem => {
+                            sum.forEach(item => {
+                                if (sitem.Name === item.title) {
+                                    item.qty = sitem.qty
+                                }
+                            })
+                        })
+                        localStorage.setItem("sumgoods", JSON.stringify(sum));
+                    } else {
+                        name_list.forEach(nitem => {
+                            user_res.forEach(uitem => {
+                                if (uitem.title === nitem.Name) {
+                                    nitem.qty = uitem.qty * 1 + nitem.qty * 1
+                                }
+                            })
+                        })
+                        store_list = name_list;
+                        // 把整理好的合并数据存到本地
+                        let arr = [];
+                        let obj = {};
+                        store_list.forEach(item => {
+                            obj.title = item.Name;
+                            obj.qty = item.qty;
+                            arr.push(obj);
+                            obj = {};
+                        })
+                        localStorage.setItem("sumgoods", JSON.stringify(arr));
+                    }
+                    // 把整理好的数据存到仓库store
+                    this.props.loginCart(store_list);
+                    //  处理格式（获取名字，查询数据库）
+                    let storeObj = {};
+                    this.props.cart[0].forEach(item => {
+                        storeObj.Name = item.Name;
+                        axios_list.push(storeObj);
+                        storeObj = {}
+                    })
+                    let response = await Api.logout_cart(JSON.stringify(axios_list));
+                    dataList = response.data;
+                    // 整理Name的qty数量,拼接到请求回来的商品dataList中
+                    store_list.forEach(item => {
+                        dataList.map(itemd => {
+                            if (item.Name === itemd.Name) {
+                                itemd.qty = item.qty
+                            }
+                        })
+                    })
+                    this.setState({
+                        dataList
+                    })
+
+                } else {
+                    //--------存在sumgoods后-----------
+                    // 直接把sumgoods拿出来发请求
+                    sumgoods = JSON.parse(sumgoods);
+                    let sumObj = {};
+                    sumgoods.forEach(item => {
+                        sumObj.Name = item.title;
+                        axios_list.push(sumObj);
+                        sumObj = {};
+                    })
+                    let response = await Api.logout_cart(JSON.stringify(axios_list));
+                    dataList = response.data;
+                    sumgoods.forEach(item => {
+                        dataList.map(itemd => {
+                            if (item.title === itemd.Name) {
+                                itemd.qty = item.qty
+                            }
+                        })
+                    })
+                    this.setState({
+                        dataList
+                    })
+
+                }
             }
+
             //渲染dataList的Name来实现
             dataList.map(item => {
                 arr.push(item.Name);
@@ -295,20 +353,19 @@ class App extends Component {
                 updateObj = {}
             })
             // 判断该用户是否有购物车信息表
-            let isIn = await Api.find_user_cart(phone_res);
             if (isIn.data.length === 0) {
                 //不存在
-                let result = await Api.create_cart({
+                await Api.create_cart({
                     phone: phone_res,
                     updateList
                 });
             } else {
-                let result = await Api.update_cart({
+                await Api.update_cart({
                     phone: phone_res,
                     updateList
                 });
             }
-            // console.log("isIN", isIn);
+
         }
 
     }
@@ -365,12 +422,10 @@ class App extends Component {
                 }
             })
         })
-        console.log("newArr", newArr);
         dataList = newArr;
         this.setState({
             dataList
         })
-        console.log("111111", dataList);
         let cartArr = [];
         let obj = {};
         dataList.forEach(item => {
@@ -385,7 +440,6 @@ class App extends Component {
             stArr.push(obj);
             obj = {}
         })
-        console.log("cartArr", cartArr)
         // 清除数据库
         let result = await Api.update_cart({
             phone: phone_res,
@@ -394,7 +448,6 @@ class App extends Component {
         // 清除本地stroage
         localStorage.setItem("sumgoods", JSON.stringify(stArr));
         localStorage.removeItem('usergoods');
-        console.log('result', result)
     }
     // 点击结算跳转到order
     goto = () => {

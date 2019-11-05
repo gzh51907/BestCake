@@ -281,7 +281,7 @@ class Mine extends Component {
                             <div className="code_box" style={show ? { display: 'block' } : { display: 'none' }}>
                                 <h6>验证码</h6>
                                 <div className="random_code">
-                                    <Input onChange={this.handleRegCode} />
+                                    <Input className="input" onChange={this.handleRegCode} />
                                     <span onClick={this.randomCode}>{random}</span>
                                 </div>
                             </div>

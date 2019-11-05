@@ -14,11 +14,12 @@
   width: 100%;
   height: 110px;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
 }
 
 .cart .goods .goodsItem .ant-checkbox-wrapper {
   padding-top: calc(55px - 8px);
+  margin: 0 10px;
 }
 
 .cart .goods .goodsItem > img {
@@ -31,6 +32,7 @@
   flex-direction: column;
   padding-top: 10px;
   margin-bottom: 0;
+  width: 170px;
 }
 
 .cart .goods .goodsItem > p > .title {
@@ -38,6 +40,10 @@
   line-height: 20px;
   height: 20px;
   margin-bottom: 10px;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .cart .goods .goodsItem > p > em {
@@ -60,6 +66,7 @@
 }
 
 .cart .goods .goodsItem .inputNum {
+  width: 90px;
   margin-right: 10px;
   padding-top: calc(55px - 15px);
 }

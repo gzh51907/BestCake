@@ -60,7 +60,7 @@ class App extends Component {
         this.changeSum();
     };
     //改数量
-    changeQty = (name, qty) => {
+    changeQty = async (name, qty) => {
         let phone_res = localStorage.getItem("phone");
         let newGoods = [];
         let obj = {};
@@ -94,7 +94,22 @@ class App extends Component {
             dataList
         })
         this.changeSum();
-
+        // 更新数据库
+        let updateList = [];
+        let updateObj = {};
+        dataList.forEach(item => {
+            updateObj.Name = item.Name;
+            updateObj.qty = item.qty;
+            updateList.push(updateObj);
+            updateObj = {}
+        })
+        // console.log("dataList",dataList);
+        // console.log("updateList",updateList);
+        let result = await Api.update_cart({
+            phone: phone_res,
+            updateList
+        });
+        console.log(result);
     }
 
     async componentDidMount() {
@@ -149,12 +164,17 @@ class App extends Component {
             // 发起请求()
             let goodsinf = await Api.login_cart(JSON.stringify(phone_res));
             // console.log('goodsinf', goodsinf);
-            let inf = [];
+            let inf = null;
+            console.log("goodsinf", goodsinf)
             goodsinf.forEach(item => {
                 if (item.phone === phone_res) {
                     inf = item.cartinf;
                 }
             })
+            console.log("inf", inf)
+            if (inf.length <= 1) {
+                inf = JSON.parse(inf);
+            }
             inf.forEach(item => {
                 // 整理Name发送请求
                 obj.Name = item.Name;

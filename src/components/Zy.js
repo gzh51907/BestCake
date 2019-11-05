@@ -103,14 +103,21 @@ class Zy extends Component{
                 }
             })
           }else{//没登录就更新浏览器的storage
-             let loaclcart = localStorage.getItem('usergoods');
-             loaclcart.forEach((i,idx)=>{
+             let loaclcart = JSON.parse(localStorage.getItem('usergoods')) ;
+             let isok2 =false;
+             if(loaclcart){//浏览器购物车有数据
+                   loaclcart.forEach((i,idx)=>{
                  if(i.title==name){//浏览器缓存已存在该商品，就增加数量
                     loaclcart[idx].qty=loaclcart[idx].qty+1;
-                 }else{//没有改商品就添加
-                     loaclcart.push({title:name,qty:num})
+                    isok2=true;
                  }
              })
+             if(!isok2){loaclcart.push({title:name,qty:num})}
+             localStorage.setItem('usergoods',JSON.stringify(loaclcart) )
+             }else{
+                 localStorage.setItem('usergoods',JSON.stringify([{title:name,qty:num}])) 
+             }
+           
           }
       }
     render(){

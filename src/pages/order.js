@@ -61,13 +61,14 @@ class Order extends Component{
         }catch{
             
         }
+        if(data.data[0]){
             let cart = data.data[0].cartinf.map(item=>{
-            return {
-                name:item.Name,
-                num:item.qty
-            }
-        })
-        this.props.ALL_CART(cart)//请求回来的数据更新仓库
+                return {
+                    name:item.Name,
+                    num:item.qty
+                }
+            })
+            this.props.ALL_CART(cart)}//请求回来的数据更新仓库
         this.init()
         store.subscribe(()=>{
             this.init()
@@ -76,6 +77,7 @@ class Order extends Component{
     init=async ()=>{//初始化
         let total=0;
         let {cart} = this.props;
+        console.log(cart)
         let arr = cart.map(item=>{
             return {'Name':item.name}
         })

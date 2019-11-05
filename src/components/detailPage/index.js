@@ -17,6 +17,7 @@ const mapDispatchToProps = dispatch => {
 }
 }
 
+let recvParam;
 @connect(mapStateToProps,mapDispatchToProps)
 class Detail extends Component{
 
@@ -28,7 +29,8 @@ class Detail extends Component{
         CurrentPrice:null,
         str_con:null,
         showha:false,
-        iname:null
+        iname:null,
+        recvParam:null
     }
 
     AddToCart=({iname,goodsnum})=>{
@@ -43,14 +45,26 @@ class Detail extends Component{
     };
 
     buynow = ({iname,goodsnum})=>{
-   
         this.AddToCart({iname,goodsnum});
-        // console.log(JSON.stringify(usergoods,{title:iname,qty:goodsnum}))
-        localStorage.setItem('usergoods',JSON.stringify({title:iname,qty:goodsnum}))
+        let loaclcart = JSON.parse(localStorage.getItem('usergoods')) ;
+        let isok2 =false;
+        if(loaclcart){//浏览器购物车有数据
+            loaclcart.forEach((i,idx)=>{
+        if(i.title==iname){//浏览器缓存已存在该商品，就增加数量
+            loaclcart[idx].qty=loaclcart[idx].qty+goodsnum;
+            isok2=true;
+        }
+        })
+        if(!isok2){loaclcart.push({title:iname,qty:goodsnum})}
+        localStorage.setItem('usergoods',JSON.stringify(loaclcart) )
+        }else{
+            localStorage.setItem('usergoods',JSON.stringify([{title:iname,qty:goodsnum}])) 
+        }
         this.setState({
             showha:true
         })
     };
+
     gocart=({iname,goodsnum})=>{
         this.AddToCart({iname,goodsnum});
         if(localStorage.getItem("phone")){
@@ -59,9 +73,23 @@ class Detail extends Component{
             this.props.history.push("/mine") 
         }
     };
+    
     goorder=({iname,goodsnum})=>{
         this.AddToCart({iname,goodsnum});
-        localStorage.setItem('usergoods',JSON.stringify({title:iname,qty:goodsnum}))
+        let loaclcart1 = JSON.parse(localStorage.getItem('usergoods')) ;
+        let isok21 =false;
+        if(loaclcart1){//浏览器购物车有数据
+            loaclcart1.forEach((i,idx)=>{
+        if(i.title==iname){//浏览器缓存已存在该商品，就增加数量
+            loaclcart1[idx].qty=loaclcart1[idx].qty+goodsnum;
+            isok21=true;
+        }
+        })
+        if(!isok21){loaclcart1.push({title:iname,qty:goodsnum})}
+        localStorage.setItem('usergoods',JSON.stringify(loaclcart1) )
+        }else{
+            localStorage.setItem('usergoods',JSON.stringify([{title:iname,qty:goodsnum}])) 
+        }
         if(localStorage.getItem("phone")){
             this.props.history.push("/order")     
         }else{
@@ -76,9 +104,19 @@ class Detail extends Component{
     };
 
     async componentDidMount(){
-        let name = this.props.location.query;
+
+    if(this.props.location.query){//判断当前有参数
+        recvParam=this.props.location.query;
+        sessionStorage.setItem('data',recvParam);// 存入到sessionStorage中
+    }else{
+        recvParam=sessionStorage.getItem('data');// 当state没有参数时，取sessionStorage中的参数
+    }
+    // this.setState({
+    //     recvParam
+    // })
+        let name =recvParam;
         let {data} = await Api.get_detaildata(name);
-        console.log(data)
+        // console.log(data)
             this.setState({
                 detaildata:data[0],
                 iname:data[0].Name,
@@ -108,12 +146,12 @@ class Detail extends Component{
                 })
             }
 
-            console.log(this.state.piclist)
+            // console.log(this.state.piclist)
     }
 
     render(){
         let {piclist,detaildata,Size,goodsnum,CurrentPrice,showha,iname} = this.state;
-        console.log(detaildata)
+        // console.log(detaildata)
             if(detaildata){
                 return(
                     <Layout className="detail_wrap_box"

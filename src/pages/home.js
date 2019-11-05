@@ -21,7 +21,7 @@ class Home extends Component{
 
 async componentDidMount(){
         let {data} = await Api.get_homedata();
-        console.log(data);
+        // console.log(data);
         //  格式化数据
         this.setState({
             SwiperBannerList:data[0].Tag.mainresult.SwiperBannerList,

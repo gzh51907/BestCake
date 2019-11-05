@@ -124,42 +124,47 @@
 }
 
 .ant-drawer-body .reg .reg_inf input {
-  width: 270px;
+  width: 65%;
   height: 100%;
   border: 0px;
 }
 
 .ant-drawer-body .reg .reg_inf > span {
+  display: block;
   height: 100%;
   line-height: 30px;
   text-align: center;
-  width: 90px;
+  width: 30%;
   background-color: #ccc;
   border-radius: 10px;
 }
 
 .ant-drawer-body .reg .code_box {
   height: 70px;
+  width: 100%;
 }
 
 .ant-drawer-body .reg .random_code {
   height: auto;
   margin-bottom: 10px;
+  height: 30px;
+  width: 100%;
 }
 
-.ant-drawer-body .reg .random_code input {
-  width: 270px;
+.ant-drawer-body .reg .random_code .input {
+  width: 65%;
   height: 100%;
   border: 0px;
   float: left;
 }
 
 .ant-drawer-body .reg .random_code > span {
+  display: block;
   height: 30px;
   line-height: 30px;
   font-size: 20px;
   text-align: center;
-  width: 90px;
+  width: 30%;
   background-color: #ccc;
   border-radius: 10px;
   letter-spacing: 3px;
